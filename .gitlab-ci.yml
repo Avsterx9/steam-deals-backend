@@ -1,5 +1,6 @@
 stages:
   - test and code analysis
+  - deploy
 
 .configuration:
   image: ubuntu:20.04
@@ -9,7 +10,6 @@ stages:
       python3
       python3-pip
     - python3 -V
-
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
 
@@ -43,3 +43,17 @@ Launch tests:
     when: always
     reports:
       junit: report.xml
+
+#==============================| DEPLOY |==============================
+
+deploy:
+  image: docker:latest
+  stage: deploy
+  services:
+    - docker:dind
+  script:
+    - docker build -t $AZURE_URL/nwta:latest .
+    - echo "$AZURE_PASS" | docker login $AZURE_URL --username $AZURE_USER --password-stdin
+    - docker push $AZURE_URL/nwta:latest
+  only:
+    - master
