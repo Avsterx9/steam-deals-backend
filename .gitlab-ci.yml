@@ -1,0 +1,21 @@
+stages:
+  - deploy
+
+deploy:
+  image: docker:latest
+  stage: deploy
+  variables:
+    DOCKER_DRIVER: overlay
+    AWS_ECS_CLUSTER: nwta-cluster
+    AWS_ECS_SERVICE: nwta-service
+  services:
+    - docker:dind
+  script:
+    - pwd
+    - ls -al
+    - apk update -qq &&
+      apk add aws-cli
+    - docker build -t $DOCKER_REPO:latest .
+    - echo $DOCKER_AUTH | docker login -u mzebrak --password-stdin
+    - docker push $DOCKER_REPO:latest
+    - aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --force-new-deployment
