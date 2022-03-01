@@ -1,0 +1,32 @@
+stages:
+  - test and code analysis
+
+.configuration:
+  image: ubuntu:20.04
+  before_script:
+    - apt-get update -qq &&
+      apt-get install -y
+      python3
+      python3-pip
+    - python3 -V
+
+
+#==============================| TESTS AND CODE ANALYSIS |==============================
+
+Lint code:
+  stage: test and code analysis
+  extends: .configuration
+  allow_failure: true
+  script:
+    - echo [ Running pylint ]
+    - pip install .
+    - find . -type f -name "*.py" | xargs pylint
+
+Check code using black:
+  stage: test and code analysis
+  extends: .configuration
+  allow_failure: true
+  script:
+    - echo [ Running black ]
+    - pip install black~=22.1.0
+    - black . --check --diff --color
