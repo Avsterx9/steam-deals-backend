@@ -30,3 +30,16 @@ Check code using black:
     - echo [ Running black ]
     - pip install black~=22.1.0
     - black . --check --diff --color
+
+Launch tests:
+  stage: test and code analysis
+  extends: .configuration
+  script:
+    - echo [ Testing the nwta backend ]
+    - pip install .
+    - python3 -m pytest tests/
+      --junitxml=report.xml
+  artifacts:
+    when: always
+    reports:
+      junit: report.xml
