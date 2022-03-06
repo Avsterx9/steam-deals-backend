@@ -1,4 +1,13 @@
-FROM nginx:1.14.2-alpine
-COPY . /usr/share/nginx/html
-EXPOSE 80
-CMD ["nginx","-g","daemon off;"]
+FROM ubuntu:20.04
+
+RUN \
+    apt-get update && \
+    apt-get install -y \
+      python3 \
+      python3-pip
+ADD . /app
+WORKDIR /app
+
+RUN pip install .
+
+CMD ["python3", "nwta/main.py", "--port", "5000"]
