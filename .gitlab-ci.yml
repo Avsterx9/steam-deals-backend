@@ -1,6 +1,11 @@
 stages:
   - test and code analysis
+  - build
   - deploy
+
+variables:
+  TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
+  TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
 
 .configuration:
   image: ubuntu:20.04
@@ -44,16 +49,37 @@ Launch tests:
     reports:
       junit: report.xml
 
-#==============================| DEPLOY |==============================
+#==============================| BUILD |==============================
 
-deploy:
+Build and push docker image:
   image: docker:latest
-  stage: deploy
+  stage: build
+  needs: ["Launch tests"]
   services:
     - docker:dind
   script:
-    - docker build -t $AZURE_URL/nwta:latest .
-    - echo "$AZURE_PASS" | docker login $AZURE_URL --username $AZURE_USER --password-stdin
-    - docker push $AZURE_URL/nwta:latest
+    - echo [ Building a docker image started. ]
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - docker push $TAG_COMMIT
+    - docker push $TAG_LATEST
+
+#==============================| DEPLOY |==============================
+
+Deploy to azure developing server:
+  image: alpine:latest
+  stage: deploy
+  needs: ["Build and push docker image"]
+  script:
+    - echo [ Deploying started. ]
+    - chmod 400 $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CI_PROJECT_NAME || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name $CI_PROJECT_NAME $TAG_COMMIT"
+  environment:
+    name: developing
+    url: http://$SERVER_IP:8080
   only:
-    - master
+    - develop
