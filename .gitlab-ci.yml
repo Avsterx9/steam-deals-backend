@@ -16,6 +16,19 @@ variables:
       python3-pip
     - python3 -V
 
+.configuration-deploy: &configuration-deploy
+  image: alpine:latest
+  stage: deploy
+  needs: ["Build and push docker image"]
+  script:
+    - echo [ Deploying to `$ENV_NAME` started. ]
+    - chmod 400 $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $ENV_NAME || true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $PORT:80 --name $ENV_NAME $TAG_COMMIT"
+
 #==============================| TESTS AND CODE ANALYSIS |==============================
 
 Lint code:
@@ -63,23 +76,31 @@ Build and push docker image:
     - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
+  only:
+    - develop
+    - master
 
 #==============================| DEPLOY |==============================
 
 Deploy to azure developing server:
-  image: alpine:latest
-  stage: deploy
-  needs: ["Build and push docker image"]
-  script:
-    - echo [ Deploying started. ]
-    - chmod 400 $ID_RSA
-    - apk update && apk add openssh-client
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CI_PROJECT_NAME || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p 8080:8080 --name $CI_PROJECT_NAME $TAG_COMMIT"
+  <<: *configuration-deploy
+  variables:
+    ENV_NAME: developing
+    PORT: 8080
   environment:
     name: developing
     url: http://$SERVER_IP:8080
   only:
     - develop
+  when: manual
+
+Deploy to azure production server:
+  <<: *configuration-deploy
+  variables:
+    ENV_NAME: production
+    PORT: 80
+  environment:
+    name: production
+    url: http://$SERVER_IP
+  only:
+    - master
