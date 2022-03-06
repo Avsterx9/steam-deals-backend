@@ -6,6 +6,8 @@ stages:
 variables:
   TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
   TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
+  PORT_DEVELOPING: 5555
+  PORT_PRODUCTION: 5000
 
 .configuration:
   image: ubuntu:20.04
@@ -27,7 +29,7 @@ variables:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $ENV_NAME || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $PORT:80 --name $ENV_NAME $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $PORT:$PORT_PRODUCTION --name $ENV_NAME $TAG_COMMIT"
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
 
@@ -86,10 +88,10 @@ Deploy to azure developing server:
   <<: *configuration-deploy
   variables:
     ENV_NAME: developing
-    PORT: 8080
+    PORT: $PORT_DEVELOPING
   environment:
     name: developing
-    url: http://$SERVER_IP:8080
+    url: http://$SERVER_IP:$PORT_DEVELOPING
   only:
     - develop
   when: manual
@@ -98,9 +100,9 @@ Deploy to azure production server:
   <<: *configuration-deploy
   variables:
     ENV_NAME: production
-    PORT: 80
+    PORT: $PORT_PRODUCTION
   environment:
     name: production
-    url: http://$SERVER_IP
+    url: http://$SERVER_IP:$PORT_PRODUCTION
   only:
     - master
