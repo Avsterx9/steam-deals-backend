@@ -1,29 +1,40 @@
 # nwta-project
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Description
 
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be
-unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your
-project, this is a good place to list differentiating factors.
+The Back-end of our application - that is, this repository, is hosted on two environments at two different addresses -
+production and development:
+
+- developing: http://nwta.eastus.cloudapp.azure.com:5555
+- production: http://nwta.eastus.cloudapp.azure.com:5000
+
+Those two addresses correspond to the master and develop branches in our repository.
+
+> API documentation is available under the `/docs` endpoint
+> - Example: http://nwta.eastus.cloudapp.azure.com:5000/docs
 
 ## Installation
 
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew.
-However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing
-specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a
-specific context like a particular programming language version or operating system or has dependencies that have to be
-installed manually, also add a Requirements subsection.
+1. `git clone https://gitlab.com/rafit/nwta-project.git`
+2. `cd nwta-project/`
+3. `pip install .`
 
 ## Usage
 
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of
-usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably
-include in the README.
+When you are in the `nwta-project/` directory, you can run the API server by:
+
+- `python3 nwta/main.py`
+
+Available arguments are listed under the:
+
+- `python3 nwta/main.py --help`
 
 ## Authors and acknowledgment
 
-Show your appreciation to those who have contributed to the project.
+There are 3 contributors of this project:
 
-## License
-
-For open source projects, say how it is licensed.
+- [mzebrak](https://gitlab.com/mzebrak)
+- [kchrobok](https://github.com/Avsterx9)
+- [rav-zyla](https://gitlab.com/rav-zyla)
