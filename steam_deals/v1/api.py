@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from nwta.v1.routers import main_router
+from steam_deals.v1.routers import main_router
 
 app = FastAPI()
 

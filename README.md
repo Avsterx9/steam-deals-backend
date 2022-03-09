@@ -1,4 +1,4 @@
-# nwta-project
+# steam-deals-backend
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -17,19 +17,19 @@ Those two addresses correspond to the master and develop branches in our reposit
 
 ## Installation
 
-1. `git clone https://gitlab.com/rafit/nwta-project.git`
-2. `cd nwta-project/`
+1. `git clone https://gitlab.com/rafit/steam-deals-backend.git`
+2. `cd steam-deals-backend/`
 3. `pip install .`
 
 ## Usage
 
-When you are in the `nwta-project/` directory, you can run the API server by:
+When you are in the `steam-deals-backend/` directory, you can run the API server by:
 
-- `python3 nwta/main.py`
+- `python3 steam-deals-backend/main.py`
 
 Available arguments are listed under the:
 
-- `python3 nwta/main.py --help`
+- `python3 steam-deals-backend/main.py --help`
 
 ## Authors and acknowledgment
 

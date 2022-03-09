@@ -10,4 +10,4 @@ WORKDIR /app
 
 RUN pip install .
 
-CMD ["python3", "nwta/main.py", "--port", "5000"]
+CMD ["python3", "steam_deals/main.py", "--port", "5000"]

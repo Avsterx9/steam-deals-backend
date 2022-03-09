@@ -7,4 +7,4 @@ def test_index(api_client):
     result = response.json()
     # ASSERT
     assert response.status_code == HTTPStatus.OK
-    assert result['description'] == "This is a nwta-project API"
+    assert result['description'] == "This is a steam-deals project API"

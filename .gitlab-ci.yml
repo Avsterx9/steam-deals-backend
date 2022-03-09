@@ -55,7 +55,7 @@ Launch tests:
   stage: test and code analysis
   extends: .configuration
   script:
-    - echo [ Testing the nwta backend ]
+    - echo [ Testing the steam-deals backend ]
     - pip install .
     - python3 -m pytest tests/
       --junitxml=report.xml

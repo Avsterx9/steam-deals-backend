@@ -6,7 +6,7 @@ import uvicorn
 
 
 def init_argparse(args: Sequence[str]) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description='nwta backend', formatter_class=argparse.RawTextHelpFormatter)
+    parser = argparse.ArgumentParser(description='steam-deals backend', formatter_class=argparse.RawTextHelpFormatter)
 
     add = parser.add_argument
     add('--host', type=str, default='0.0.0.0', help='Server host address.')
