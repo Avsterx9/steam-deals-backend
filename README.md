@@ -4,32 +4,61 @@
 
 ## Description
 
-The Back-end of our application - that is, this repository, is hosted on two environments at two different addresses -
+The back-end of steam-deals project - that is, this repository, is hosted on two environments at two different addresses
 production and development:
 
-- developing: http://nwta.eastus.cloudapp.azure.com:5555
+- development: http://nwta.eastus.cloudapp.azure.com:5555
 - production: http://nwta.eastus.cloudapp.azure.com:5000
 
-Those two addresses correspond to the master and develop branches in our repository.
+Those two addresses correspond to the `master` and `develop` branches in this repository.
 
-> API documentation is available under the `/docs` endpoint
+> API documentation is available under the `/docs` endpoint.
 > - Example: http://nwta.eastus.cloudapp.azure.com:5000/docs
+
+## Requirements
+
+1. `python3.8` or higher
+2. `python3.8-venv` or higher (only when you're installing this package in a virtual environment)
 
 ## Installation
 
-1. `git clone https://gitlab.com/rafit/steam-deals-backend.git`
-2. `cd steam-deals-backend/`
-3. `pip install .`
+We assume that you have already cloned this repository and you are in the project directory, so you have done:
+
+```bash
+git clone https://gitlab.com/rafit/steam-deals-backend.git
+cd steam-deals-backend/
+```
+
+Then you can choose:
+<details>
+<summary>Install in virtual environment manually</summary>
+
+```bash
+python3.8 -m venv venv/ # Create virtual environment in the `./venv/` directory
+. venv/bin/activate     # Activate it
+pip3 install -e .       # Install steam-deals
+```
+
+</details>
+
+<details>
+<summary>Install in your operating system scope (not recommended)</summary>
+
+```bash
+pip3 install -e .
+```
+
+</details>
 
 ## Usage
 
-When you are in the `steam-deals-backend/` directory, you can run the API server by:
+When you are in the `steam-deals-backend/` directory, you can run the API server by running those command:
 
-- `python3 steam-deals-backend/main.py`
+> `steam-deals` OR `python3 steam-deals-backend/main.py`
 
 Available arguments are listed under the:
 
-- `python3 steam-deals-backend/main.py --help`
+> `steam-deals -h` OR `python3 steam-deals-backend/main.py --help`
 
 ## Authors and acknowledgment
 
