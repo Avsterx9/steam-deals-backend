@@ -9,3 +9,10 @@ build-backend = 'setuptools.build_meta'
 [tool.black]
 line-length = 120
 skip-string-normalization = true
+
+[tool.pytest.ini_options]
+addopts = [
+    '--cov=steam_deals',
+    '--cov-report=term-missing',
+    '--cov-report=html:artifacts/htmlcov',
+]
