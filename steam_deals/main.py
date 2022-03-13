@@ -1,10 +1,14 @@
 import argparse
+import logging
 import sys
 from typing import Sequence
 
 import uvicorn
 
-from steam_deals.config import settings
+from steam_deals.config import ROOT_DIRECTORY, settings, VERSION
+from steam_deals.core.logger import logger_setup
+
+log = logging.getLogger(ROOT_DIRECTORY.stem)
 
 
 def init_argparse(args: Sequence[str]) -> argparse.Namespace:
@@ -19,9 +23,15 @@ def init_argparse(args: Sequence[str]) -> argparse.Namespace:
 
 def main():
     args = init_argparse(sys.argv[1:])
+    logger_setup(level=settings.LOG_LEVEL.upper())
+    log.info(f'VERSION: {VERSION}')
 
     uvicorn.run(
-        'steam_deals.v1.api:app', host=args.host, port=args.port, debug=settings.DEBUG, log_level=settings.LOG_LEVEL
+        app='steam_deals.v1.api:app',
+        host=args.host,
+        port=args.port,
+        debug=settings.DEBUG,
+        log_level=settings.LOG_LEVEL.lower(),
     )
 
 
