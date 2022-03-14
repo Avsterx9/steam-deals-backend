@@ -3,18 +3,6 @@ stages:
   - build
   - deploy
 
-workflow:
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "develop"
-      variables:
-        ENVIRONMENT_NAME: DEVELOPING
-        BACKEND_PORT: 5555
-    - if: $CI_COMMIT_REF_NAME == "master"
-      variables:
-        ENVIRONMENT_NAME: PRODUCTION
-        BACKEND_PORT: 5000
-    - when: always
-
 variables:
   TAG_LATEST: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:latest
   TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
@@ -28,6 +16,22 @@ variables:
       python3-pip
     - python3 -V
     - mkdir artifacts
+
+.configuration-deployement:
+  image: alpine:latest
+  stage: deploy
+  needs: [ "Build and push docker image" ]
+  script:
+    - echo [ Deploying to $CI_ENVIRONMENT_NAME started. Port=$BACKEND_PORT ]
+    - chmod 400 $ID_RSA
+    - apk update && apk add openssh-client
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $CI_ENVIRONMENT_NAME|| true"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT -e ENV_FOR_DYNACONF=$CI_ENVIRONMENT_NAME --restart always --name $CI_ENVIRONMENT_NAME $TAG_COMMIT"
+  environment:
+    url: http://$SERVER_IP:$BACKEND_PORT
+  when: manual
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
 
@@ -85,22 +89,16 @@ Build and push docker image:
 
 #==============================| DEPLOY |==============================
 
-Deploy to azure server:
-  image: alpine:latest
-  stage: deploy
-  needs: [ "Build and push docker image" ]
-  script:
-    - echo [ Deploying to `$ENVIRONMENT_NAME` started. ]
-    - chmod 400 $ID_RSA
-    - apk update && apk add openssh-client
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $ENVIRONMENT_NAME || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT -e ENV_FOR_DYNACONF=$ENVIRONMENT_NAME --restart always --name $ENVIRONMENT_NAME $TAG_COMMIT"
+Deploy to azure DEVELOPMENT server:
+  extends: .configuration-deployement
   environment:
-    name: $ENVIRONMENT_NAME
-    url: http://$SERVER_IP:$BACKEND_PORT
+    name: DEVELOPMENT
   only:
     - develop
+
+Deploy to azure PRODUCTION server:
+  extends: .configuration-deployement
+  environment:
+    name: PRODUCTION
+  only:
     - master
-  when: manual
