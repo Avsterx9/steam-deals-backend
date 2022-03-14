@@ -4,10 +4,12 @@ RUN \
     apt-get update && \
     apt-get install -y \
       python3 \
-      python3-pip
+      python3-pip \
+      git
+
 ADD . /app
 WORKDIR /app
 
-RUN pip install .
+RUN pip install --no-cache-dir -e .
 
-CMD ["python3", "steam_deals/main.py", "--port", "5000"]
+CMD ["steam-deals"]
