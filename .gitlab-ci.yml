@@ -5,14 +5,14 @@ stages:
 
 workflow:
   rules:
-    - if: $CI_COMMIT_REF_NAME == "develop"
+    - if: '$CI_COMMIT_BRANCH == "develop"'
       variables:
-        ENVIRONMENT_NAME: DEVELOPING
-        BACKEND_PORT: 5555
-    - if: $CI_COMMIT_REF_NAME == "master"
+        ENVIRONMENT_NAME: DEVELOPMENT
+        BACKEND_PORT: "5555" # error when numeric
+    - if: '$CI_COMMIT_BRANCH == "master"'
       variables:
         ENVIRONMENT_NAME: PRODUCTION
-        BACKEND_PORT: 5000
+        BACKEND_PORT: "5000" # error when numeric
     - when: always
 
 variables:
@@ -90,7 +90,7 @@ Deploy to azure server:
   stage: deploy
   needs: [ "Build and push docker image" ]
   script:
-    - echo [ Deploying to `$ENVIRONMENT_NAME` started. ]
+    - echo [ Deploying to $CI_ENVIRONMENT_NAME on port $BACKEND_PORT started. ]
     - chmod 400 $ID_RSA
     - apk update && apk add openssh-client
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
