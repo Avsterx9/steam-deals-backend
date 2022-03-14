@@ -2,16 +2,24 @@
 LOG_LEVEL = 'info'
 PROJECT_TITLE = 'steam-deals project backend API 🚀'
 PROJECT_DESC = 'project carried out during `application development tools` classes.'
-HOST = 'localhost'
-DEBUG = true
-PORT = 5555
-ALLOW_ORIGINS = ['http://localhost:8080']
+HOST = '0.0.0.0'
 
 [development]
+DEBUG = true
+PORT = 5555
+ALLOW_ORIGINS = [
+    'http://localhost:8080',
+    'https://localhost:8080',
+    'http://nwta.eastus.cloudapp.azure.com:8080',
+    'https://nwta.eastus.cloudapp.azure.com:8080',
+]
 
 [testing]
+DEBUG = true
+PORT = 5556
+ALLOW_ORIGINS = ['http://localhost:8080', 'https://localhost:8080']
 
 [production]
 DEBUG = false
 PORT = 5000
-ALLOW_ORIGINS = ['http://localhost']
+ALLOW_ORIGINS = ['http://nwta.eastus.cloudapp.azure.com', 'https://nwta.eastus.cloudapp.azure.com']
