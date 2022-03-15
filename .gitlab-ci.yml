@@ -27,7 +27,7 @@ variables:
       python3
       python3-pip
     - python3 -V
-    - mkdir artifacts
+    - mkdir -p artifacts
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
 
@@ -68,15 +68,18 @@ Launch tests:
 #==============================| BUILD |==============================
 
 Build and push docker image:
-  image: docker:latest
+  image: docker:20.10.13
   stage: build
   needs: [ "Launch tests" ]
+  variables:
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: "" # Create the certificates inside this directory for both the server and client.
   services:
-    - docker:dind
+    - docker:20.10.13-dind
   script:
     - echo [ Building a docker image started. ]
     - docker build --build-arg ENVIRONMENT_NAME=$ENVIRONMENT_NAME -t $TAG_COMMIT -t $TAG_LATEST .
-    - docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY
+    - echo $CI_BUILD_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY # -p gives <WARNING! Using --password via the CLI is insecure. Use --password-stdin.>
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST
   only:
