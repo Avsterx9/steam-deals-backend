@@ -22,9 +22,15 @@ def init_argparse(args: Sequence[str]) -> argparse.Namespace:
 
 
 def main():
-    args = init_argparse(sys.argv[1:])
     logger_setup(level=settings.LOG_LEVEL.upper())
     log.info(f'VERSION: {VERSION}')
+    log.info(f'ENVIRONMENT: {settings.ENV_FOR_DYNACONF}')
+
+    try:
+        args = init_argparse(sys.argv[1:])
+    except AttributeError:
+        log.critical(f'Error in  `{settings.ENV_FOR_DYNACONF}` ENVIRONMENT')
+        raise AttributeError(f'ENVIRONMENT `{settings.ENV_FOR_DYNACONF}` doest not exist / has missing args ') from None
 
     uvicorn.run(
         app='steam_deals.v1.api:app',

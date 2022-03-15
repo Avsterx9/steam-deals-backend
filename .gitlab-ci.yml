@@ -96,7 +96,7 @@ Deploy to azure server:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f $ENVIRONMENT_NAME || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT -e ENV_FOR_DYNACONF=$ENVIRONMENT_NAME --restart always --name $ENVIRONMENT_NAME $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT -e ENVIRONMENT_NAME=$ENVIRONMENT_NAME --restart always --name $ENVIRONMENT_NAME $TAG_COMMIT"
   environment:
     name: $ENVIRONMENT_NAME
     url: http://$SERVER_IP:$BACKEND_PORT

@@ -12,6 +12,7 @@ settings = Dynaconf(
     envvar_prefix='STEAM_DEALS',
     settings_files=[GIT_DIRECTORY / 'settings.toml', GIT_DIRECTORY / '.secrets.toml'],
     environments=True,
+    env_switcher='ENVIRONMENT_NAME',
     load_dotenv=True,
     dotenv_path=GIT_DIRECTORY / '.env',
 )
