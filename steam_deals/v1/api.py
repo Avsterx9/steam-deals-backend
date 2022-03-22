@@ -3,6 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 
 from steam_deals.config import settings, VERSION
 from steam_deals.v1.routers import main_router
+from steam_deals.v1.routers.users import users_router
 
 app = FastAPI(
     title=settings.PROJECT_TITLE,
@@ -27,4 +28,6 @@ if settings.get('ALLOW_ORIGINS', None):
         allow_headers=settings.get('ALLOW_HEADERS', ['*']),
     )
 
+
 app.include_router(main_router)
+app.include_router(users_router)
