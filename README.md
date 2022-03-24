@@ -29,24 +29,48 @@ git clone https://gitlab.com/rafit/steam-deals-backend.git
 cd steam-deals-backend/
 ```
 
+Check if you don't know what is [PEP 517](https://setuptools.pypa.io/en/latest/build_meta.html?highlight=pep%20517)
+
 Then you can choose:
 <details>
 <summary>Install in virtual environment manually</summary>
 
-```bash
-python3.8 -m venv venv/ # Create virtual environment in the `./venv/` directory
-. venv/bin/activate     # Activate it
-pip3 install -e .       # Install steam-deals
-```
+> -   <details>
+>     <summary>Use PEP 517 - install everything automatically  </summary>
+>
+>     ```bash
+>     pip3 install build                          # Install PyPA correct PEP 517 build frontend
+>     pythom3.8 -m build --wheel                  # Build the package in an isolated environment, generating a wheel in the directory `dist/`
+>     python3.8 -m venv venv/                     # Create virtual environment in the `./venv/` directory
+>     . venv/bin/activate                         # Activate it
+>     find dist/ -name *.whl | xargs pip install  # Find `steam-deals` .whl in the `dist/` directory and install it
+>     ```
+>
+>     </details>
+>
+> -   <details>
+>     <summary>Upgrade your system packages and install as editable</summary>
+>
+>     ```bash
+>     pip3 install -U pip setuptools wheel  # Upgrade your packaged used for building
+>     python3.8 -m venv venv/               # Create virtual environment in the `./venv/` directory
+>     . venv/bin/activate                   # Activate it
+>     pip3 install -e .                     # Install `steam-deals` as editable
+>     ```
+>
+>    </details>
 
 </details>
 
 <details>
 <summary>Install in your operating system scope (not recommended)</summary>
 
-```bash
-pip3 install -e .
-```
+> Do as above, but just omit the following part:
+>
+> ```bash
+> pythom3.8 -m build --wheel
+> python3.8 -m venv venv/
+> ```
 
 </details>
 

@@ -14,6 +14,7 @@ RUN \
 ADD . /app
 WORKDIR /app
 
+RUN pip install -U pip setuptools wheel
 RUN pip install --no-cache-dir -e .
 
 CMD steam-deals

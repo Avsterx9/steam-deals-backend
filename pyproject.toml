@@ -1,10 +1,10 @@
 [build-system]
-requires = [
-    'setuptools ~= 44.0.0',
-    'wheel',
-]
-
 build-backend = 'setuptools.build_meta'
+requires = [
+    'pip ~= 22.0.4',
+    'setuptools ~= 60.10.0',
+    'wheel ~= 0.37.1',
+]
 
 [tool.black]
 line-length = 120

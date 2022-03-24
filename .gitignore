@@ -6,3 +6,5 @@ __pycache__/
 venv/
 .secrets.*
 .coverage
+build/
+dist/
