@@ -16,26 +16,10 @@ def _build_detail(*args: Optional[dict]) -> list:
     return detail
 
 
-def test_login_for_access_token_successful(api_client: TestClient, register_user: Response):
-    # ARRANGE
-    url = '/token/'
-
-    response_register = register_user
-    result_register = response_register.json()
-
-    form_data = {
-        'username': result_register['username'],
-        'password': result_register['username'],
-    }
-
-    # ACT
-    response_login = api_client.post(url=url, data=form_data)
-    result_login = response_login.json()
-
-    # ASSERT
-    assert response_login.status_code == status.HTTP_200_OK, result_login
-    assert result_login['access_token']
-    assert result_login['token_type'] == 'bearer'
+def test_login_for_access_token_successful(login_user: Response):
+    # pylint: disable=unused-argument
+    # REASON: `login_user` is a fixture that logs the example user in, need to test it as well
+    pass
 
 
 @pytest.mark.parametrize(
