@@ -12,13 +12,13 @@ from steam_deals.core.db.session import get_db
 from steam_deals.v1.api import app
 
 
-@pytest.fixture(scope='session', autouse=True)
-def _set_test_settings() -> None:
+@pytest.fixture(name='_set_test_settings', scope='session', autouse=True)
+def _fixture_set_test_settings() -> None:
     settings.configure(ENV_FOR_DYNACONF='testing')
 
 
-@pytest.fixture()
-def _session() -> Session:
+@pytest.fixture(name='_session')
+def _fixture_session() -> Session:
     engine = create_engine(settings.DATABASE_URL, connect_args={'check_same_thread': False})
 
     Base.metadata.create_all(bind=engine)
@@ -29,8 +29,8 @@ def _session() -> Session:
     Base.metadata.drop_all(bind=engine)
 
 
-@pytest.fixture()
-def api_client(_session) -> TestClient:
+@pytest.fixture(name='api_client')
+def fixture_api_client(_session: Session) -> TestClient:
     def _get_db_override():
         return _session
 
@@ -43,8 +43,8 @@ class IndexResponseMaker(Protocol):
         pass
 
 
-@pytest.fixture()
-def index_response() -> IndexResponseMaker:  # remove err: "'Index' object is not callable" when type-hinting 'Index'
+@pytest.fixture(name='index_response')
+def fixture_index_response() -> IndexResponseMaker:  # remove err: "'Index' object is not callable" when type-hinting
     def _index_response(version: str) -> schemas.Index:
         return schemas.Index(version=version)
 

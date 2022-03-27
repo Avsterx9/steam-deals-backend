@@ -4,8 +4,8 @@ from starlette import status
 from starlette.testclient import TestClient
 
 
-@pytest.fixture(scope='session')
-def example_user() -> dict:
+@pytest.fixture(name='example_user', scope='session')
+def fixture_example_user() -> dict:
     return {
         'username': 'johndoe',
         'email': 'john@doe.com',
@@ -15,8 +15,8 @@ def example_user() -> dict:
     }
 
 
-@pytest.fixture()
-def register_user(example_user: dict, api_client: TestClient) -> Response:
+@pytest.fixture(name='register_user')
+def fixture_register_user(example_user: dict, api_client: TestClient) -> Response:
     # ARRANGE
     url = '/users'
 
@@ -33,8 +33,8 @@ def register_user(example_user: dict, api_client: TestClient) -> Response:
     return response
 
 
-@pytest.fixture()
-def login_user(register_user: Response, api_client: TestClient) -> Response:
+@pytest.fixture(name='login_user')
+def fixture_login_user(register_user: Response, api_client: TestClient) -> Response:
     # ARRANGE
     url = '/token'
     response_register = register_user
