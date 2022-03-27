@@ -1,11 +1,17 @@
 from fastapi import status
-
 import git
+from starlette.testclient import TestClient
 
 from steam_deals.config import settings
+from tests.conftest import IndexResponseMaker
 
 
-def test_connection(api_client):
+def test_if_test_settings():
+    assert settings.ENV_FOR_DYNACONF == 'testing'
+    assert settings.DATABASE_URL.startswith('sqlite')
+
+
+def test_api_connection(api_client: TestClient):
     # ACT
     response = api_client.get('/')
 
@@ -13,7 +19,7 @@ def test_connection(api_client):
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_index(api_client, index_response):
+def test_index(api_client: TestClient, index_response: IndexResponseMaker):
     # ARRANGE
     repo = git.Repo(search_parent_directories=True)
     sha = repo.head.object.hexsha
@@ -23,11 +29,11 @@ def test_index(api_client, index_response):
     result = response.json()
 
     # ASSERT
-    assert response.status_code == status.HTTP_200_OK
+    assert response.status_code == status.HTTP_200_OK, result
     assert result in [index_response(version=sha), index_response(version='UNCOMMITTED')]
 
 
-def test_cors_header(api_client):
+def test_cors_header(api_client: TestClient):
     # ARRANGE
     valid_origins = settings.ALLOW_ORIGINS
     invalid_origins = ['http://localhost:3201', 'http://localhost:4001']

@@ -6,6 +6,8 @@ from typing import Sequence
 import uvicorn
 
 from steam_deals.config import ROOT_DIRECTORY, settings, VERSION
+from steam_deals.core.db.base_class import Base
+from steam_deals.core.db.session import engine
 from steam_deals.core.logger import logger_setup
 
 log = logging.getLogger(ROOT_DIRECTORY.stem)
@@ -31,6 +33,8 @@ def main():
     except AttributeError:
         log.critical(f'Error in  `{settings.ENV_FOR_DYNACONF}` ENVIRONMENT')
         raise AttributeError(f'ENVIRONMENT `{settings.ENV_FOR_DYNACONF}` doest not exist / has missing args ') from None
+
+    Base.metadata.create_all(bind=engine)
 
     uvicorn.run(
         app='steam_deals.v1.api:app',

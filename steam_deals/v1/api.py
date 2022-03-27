@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from steam_deals.config import settings, VERSION
 from steam_deals.v1.routers import main_router
 
+
 app = FastAPI(
     title=settings.PROJECT_TITLE,
     description=settings.PROJECT_DESC,
