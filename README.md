@@ -40,8 +40,8 @@ Then you can choose:
 >
 >     ```bash
 >     pip3 install build                          # Install PyPA correct PEP 517 build frontend
->     pythom3.8 -m build --wheel                  # Build the package in an isolated environment, generating a wheel in the directory `dist/`
->     python3.8 -m venv venv/                     # Create virtual environment in the `./venv/` directory
+>     python3.8 -m build --wheel                  # Build the package in an isolated environment, generating a wheel in the directory `dist/`
+>     python3.8 -m venv venv/                     # Create virtual environment in the `venv/` directory
 >     . venv/bin/activate                         # Activate it
 >     find dist/ -name *.whl | xargs pip install  # Find `steam-deals` .whl in the `dist/` directory and install it
 >     ```
@@ -52,7 +52,7 @@ Then you can choose:
 >     <summary>Upgrade your system packages and install as editable</summary>
 >
 >     ```bash
->     pip3 install -U pip setuptools wheel  # Upgrade your packaged used for building
+>     pip3 install -U pip setuptools wheel  # Upgrade your packages used for building
 >     python3.8 -m venv venv/               # Create virtual environment in the `./venv/` directory
 >     . venv/bin/activate                   # Activate it
 >     pip3 install -e .                     # Install `steam-deals` as editable
@@ -78,11 +78,15 @@ Then you can choose:
 
 When you are in the `steam-deals-backend/` directory, you can run the API server by running those command:
 
-> `steam-deals` OR `python3 steam-deals-backend/main.py`
+> `steam-deals` OR `python3 steam_deals/main.py`
 
 Available arguments are listed under the:
 
-> `steam-deals -h` OR `python3 steam-deals-backend/main.py --help`
+> `steam-deals -h` OR `python3 steam_deals/main.py --help`
+
+You can specify the environment by using the `ENVIRONMENT_NAME` environment variable like:
+
+> `ENVIRONMENT_NAME=testing steam-deals -h` OR `ENVIRONMENT_NAME=testing python3 steam_deals/main.py --help`
 
 ## Authors and acknowledgment
 
