@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
@@ -12,8 +11,9 @@ from steam_deals.core import schemas, security
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION, HTTPException
+from steam_deals.core.security import OAuth2PasswordBearerWithCookie
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='/token')
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl='/token')
 
 
 def authenticate_user(db: Session, username: str, password: str) -> schemas.UserInDb:
