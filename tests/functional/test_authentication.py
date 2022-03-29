@@ -88,3 +88,24 @@ def test_login_for_access_token_credentials_missing(
     # ASSERT
     assert response_login.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY, result_login
     assert result_login == {'detail': _build_detail(username_dict, password_dict)}
+
+
+@pytest.mark.parametrize('by_header', [False, True], ids=['using HttpOnly cookie', 'using Authorization header'])
+def test_authentication_methods(by_header: bool, login_user: Response, api_client: TestClient):
+    # ARRANGE
+    url = '/me'
+    logout_url = '/logout'
+    headers = None
+
+    if by_header:
+        response_login = login_user
+        result_login = response_login.json()
+        api_client.post(url=logout_url)  # deleting HttpOnly cookie to test if authorization by header works also
+        headers = {'Authorization': f'Bearer {result_login["access_token"]}'}
+
+    # ACT
+    response_me = api_client.get(url=url, headers=headers)
+    result_me = response_me.json()
+
+    # ASSERT
+    assert response_me.status_code == status.HTTP_200_OK, result_me

@@ -4,15 +4,14 @@ from starlette.testclient import TestClient
 
 
 def test_me_endpoint_successful(example_user: dict, login_user: Response, api_client: TestClient):
+    # pylint: disable=unused-argument
+    # REASON: the `login_user` argument is used indirectly - we need to login before reaching `/me` endpoint
+
     # ARRANGE
     url = '/me'
 
-    response_login = login_user
-    result_login = response_login.json()
-    headers = {'Authorization': f'Bearer {result_login["access_token"]}'}
-
     # ACT
-    response_me = api_client.get(url=url, headers=headers)
+    response_me = api_client.get(url=url)
     result_me = response_me.json()
 
     # ASSERT
