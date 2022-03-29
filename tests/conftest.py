@@ -1,3 +1,4 @@
+import os
 from typing import Protocol
 
 from fastapi.testclient import TestClient
@@ -5,16 +6,17 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from steam_deals.config import settings
+from steam_deals.config import ENV_SWITCHER, settings
 from steam_deals.core import schemas
 from steam_deals.core.db.base_class import Base
 from steam_deals.core.db.session import get_db
-from steam_deals.v1.api import app
+from steam_deals.v1.api import add_cors_middleware, app
 
 
 @pytest.fixture(name='_set_test_settings', scope='session', autouse=True)
 def _fixture_set_test_settings() -> None:
-    settings.configure(ENV_FOR_DYNACONF='testing')
+    os.environ[ENV_SWITCHER] = "testing"
+    settings.reload()
 
 
 @pytest.fixture(name='_session')
@@ -31,6 +33,10 @@ def _fixture_session() -> Session:
 
 @pytest.fixture(name='api_client')
 def fixture_api_client(_session: Session) -> TestClient:
+    # because middleware gets variables from `steam_deals.config.settings` and is actually added when the
+    # `from steam_deals.v1.api import app` is done - has to be added again after settings.reload()
+    add_cors_middleware(app)
+
     def _get_db_override():
         return _session
 

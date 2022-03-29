@@ -7,8 +7,13 @@ from tests.conftest import IndexResponseMaker
 
 
 def test_if_test_settings():
+    # settings.toml
     assert settings.ENV_FOR_DYNACONF == 'testing'
+    assert settings.PORT == 5556
     assert settings.DATABASE_URL.startswith('sqlite')
+
+    # .secrets.toml
+    assert settings.SECRET_KEY == 'your_secret_key'
 
 
 def test_api_connection(api_client: TestClient):

@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
+from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 
@@ -23,14 +24,16 @@ app = FastAPI(
     },
 )
 
-if settings.get('ALLOW_ORIGINS', None):
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.ALLOW_ORIGINS,
-        allow_credentials=settings.get('ALLOW_CREDENTIALS', True),
-        allow_methods=settings.get('ALLOW_METHODS', ['*']),
-        allow_headers=settings.get('ALLOW_HEADERS', ['*']),
-    )
+
+def add_cors_middleware(app_: Starlette):
+    if settings.get('ALLOW_ORIGINS', None):
+        app_.add_middleware(
+            CORSMiddleware,
+            allow_origins=settings.ALLOW_ORIGINS,
+            allow_credentials=settings.get('ALLOW_CREDENTIALS', True),
+            allow_methods=settings.get('ALLOW_METHODS', ['*']),
+            allow_headers=settings.get('ALLOW_HEADERS', ['*']),
+        )
 
 
 @app.exception_handler(HTTPException)
@@ -48,3 +51,5 @@ async def http_exception_handler(request: Request, exception: HTTPException):
 app.include_router(main_router)
 app.include_router(users_router)
 app.include_router(me_router)
+
+add_cors_middleware(app)
