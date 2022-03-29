@@ -47,7 +47,7 @@ Check code using black:
   allow_failure: true
   script:
     - echo [ Running black ]
-    - pip install black~=22.1.0
+    - pip install .[dev]
     - black . --check --diff --color
 
 Launch tests:
