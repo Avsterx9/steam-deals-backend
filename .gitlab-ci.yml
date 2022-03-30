@@ -79,7 +79,7 @@ Build and push docker image:
     - docker:20.10.13-dind
   script:
     - echo [ Building a docker image started. ]
-    - docker build --build-arg ENVIRONMENT_NAME=$ENVIRONMENT_NAME -t $TAG_COMMIT -t $TAG_LATEST .
+    - docker build -t $TAG_COMMIT -t $TAG_LATEST -f Dockerfile.$ENVIRONMENT_NAME .
     - echo $CI_BUILD_TOKEN | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY # -p gives <WARNING! Using --password via the CLI is insecure. Use --password-stdin.>
     - docker push $TAG_COMMIT
     - docker push $TAG_LATEST

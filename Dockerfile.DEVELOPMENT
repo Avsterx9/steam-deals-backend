@@ -1,0 +1,27 @@
+FROM ubuntu:20.04
+
+RUN \
+    apt-get update && \
+    DEBIAN_FRONTEND=noninteractive \
+    apt-get install -y \
+      python3 \
+      python3-pip \
+      git \
+      postgresql
+
+USER postgres
+
+RUN /etc/init.d/postgresql start && \
+    psql -c "SELECT version();" && \
+    psql -c "ALTER USER postgres WITH PASSWORD 'devdevdev';" && \
+    psql -c "CREATE DATABASE steam_deals_local;"
+
+USER root
+
+ADD . /app
+WORKDIR /app
+
+RUN pip install -U pip setuptools wheel
+RUN pip install --no-cache-dir .
+
+CMD service postgresql start && steam-deals
