@@ -100,7 +100,12 @@ Deploy to azure server:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f ${ENVIRONMENT_NAME}_BACKEND || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
+    - |
+      if [ "$ENVIRONMENT_NAME" == "PRODUCTION" ]; then
+        ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -e DB_USER=$DB_USER -e DB_PASS=$DB_PASS -e SECRET_KEY=$SECRET_KEY -e ENVIRONMENT_NAME=$ENVIRONMENT_NAME -p $BACKEND_PORT:$BACKEND_PORT --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
+      else
+        ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
+      fi
   environment:
     name: $ENVIRONMENT_NAME
     url: http://$SERVER_IP:$BACKEND_PORT
