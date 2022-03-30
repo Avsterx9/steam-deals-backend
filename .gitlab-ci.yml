@@ -20,14 +20,12 @@ variables:
   TAG_COMMIT: $CI_REGISTRY_IMAGE/$CI_COMMIT_REF_NAME:$CI_COMMIT_SHORT_SHA
 
 .configuration:
-  image: ubuntu:20.04
+  image: $CI_REGISTRY_IMAGE/cicd-image
   before_script:
-    - apt-get update -qq &&
-      apt-get install -y
-      python3
-      python3-pip
     - python3 -V
+    - pip -V
     - pip install -U pip setuptools wheel
+    - pip install .[dev]
     - mkdir -p artifacts
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
@@ -38,8 +36,7 @@ Lint code:
   allow_failure: true
   script:
     - echo [ Running pylint ]
-    - pip install .[dev]
-    - find . -type f -name "*.py" | xargs pylint
+    - find -type f -name "*.py" -not -path "./build/*" | xargs pylint
 
 Check code using black:
   stage: test and code analysis
@@ -47,7 +44,6 @@ Check code using black:
   allow_failure: true
   script:
     - echo [ Running black ]
-    - pip install .[dev]
     - black . --check --diff --color
 
 Launch tests:
@@ -55,8 +51,6 @@ Launch tests:
   extends: .configuration
   script:
     - echo [ Testing the steam-deals backend ]
-    - apt-get install -y git
-    - pip install .[dev]
     - python3 -m pytest tests/
       --junitxml=report.xml
   artifacts:
