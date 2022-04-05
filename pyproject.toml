@@ -15,4 +15,5 @@ addopts = [
     '--cov=steam_deals',
     '--cov-report=term-missing',
     '--cov-report=html:artifacts/htmlcov',
+    '--cov-report=xml:artifacts/coverage.xml',
 ]
