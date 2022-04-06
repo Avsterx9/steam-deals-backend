@@ -10,7 +10,9 @@ RUN \
 ADD . /app
 WORKDIR /app
 
+RUN git update-index --skip-worktree .secrets.toml  # because we're mounting .secrets.toml and git discovers change so we're not getting proper version -> UNCOMMITTED without this line
+
 RUN pip install -U pip setuptools wheel
 RUN pip install --no-cache-dir .
 
-CMD steam-deals
+CMD ENVIRONMENT_NAME=PRODUCTION steam-deals

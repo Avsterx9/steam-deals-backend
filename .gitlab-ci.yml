@@ -114,7 +114,8 @@ Deploy to azure server:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f ${ENVIRONMENT_NAME}_BACKEND || true"
     - |
       if [ "$ENVIRONMENT_NAME" == "PRODUCTION" ]; then
-        ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -e DB_USER=$DB_USER -e DB_PASS=$DB_PASS -e SECRET_KEY=$SECRET_KEY -e ENVIRONMENT_NAME=$ENVIRONMENT_NAME -p $BACKEND_PORT:$BACKEND_PORT --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
+        scp -i $ID_RSA -o StrictHostKeyChecking=no $SECRETS $SERVER_USER@$SERVER_IP:~/.secrets.toml
+        ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT -v ~/.secrets.toml:/app/.secrets.toml --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
       else
         ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -d -p $BACKEND_PORT:$BACKEND_PORT --restart always --name ${ENVIRONMENT_NAME}_BACKEND $TAG_COMMIT"
       fi

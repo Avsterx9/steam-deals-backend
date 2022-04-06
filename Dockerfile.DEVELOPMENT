@@ -24,4 +24,4 @@ WORKDIR /app
 RUN pip install -U pip setuptools wheel
 RUN pip install --no-cache-dir .
 
-CMD service postgresql start && steam-deals
+CMD service postgresql start && ENVIRONMENT_NAME=DEVELOPMENT steam-deals
