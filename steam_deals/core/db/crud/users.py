@@ -5,6 +5,7 @@ import pytz
 from sqlalchemy.orm import Session
 
 from steam_deals.core import models, schemas, security
+from steam_deals.core.schemas import UserDetailed
 
 
 def create_user(db: Session, user: schemas.UserIn) -> models.User:
@@ -17,6 +18,19 @@ def create_user(db: Session, user: schemas.UserIn) -> models.User:
         first_name=user.first_name,
         last_name=user.last_name,
     )
+
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def update_user(db: Session, user: UserDetailed) -> models.User:
+    db_user = get_user_by_username(db=db, username=user.username)
+
+    for var, value in vars(user).items():
+        if value:
+            setattr(db_user, var, value)
 
     db.add(db_user)
     db.commit()

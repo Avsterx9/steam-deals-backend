@@ -2,11 +2,14 @@ from pathlib import Path
 from typing import Final
 
 from dynaconf import Dynaconf
+from starlette.templating import Jinja2Templates
 
 from steam_deals.core import utils
 
 ROOT_DIRECTORY: Final[Path] = Path(__file__).parent
 ENV_SWITCHER: Final[str] = 'ENVIRONMENT_NAME'
+
+templates = Jinja2Templates(directory=ROOT_DIRECTORY / 'core/templates')
 
 settings = Dynaconf(
     envvar_prefix='STEAM_DEALS',

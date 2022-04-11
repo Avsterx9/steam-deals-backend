@@ -54,6 +54,14 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
 async def get_current_active_user(user: schemas.UserInDb = Depends(get_current_user)) -> schemas.UserInDb:
     if user.disabled:
         raise HTTPException(
-            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is inactive'
+            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is inactive!'
+        )
+    return user
+
+
+async def get_current_verified_user(user: schemas.UserInDb = Depends(get_current_active_user)) -> schemas.UserInDb:
+    if not user.verified:
+        raise HTTPException(
+            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is not verified!'
         )
     return user

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Verification</title>
+</head>
+<body>
+<div style="display: flex; align-items: center; justify-content: center; flex-direction: column; font-family: 'Noto Sans', sans-serif;">
+    <h3> Account Verification </h3>
+    <br>
+    <p>Hi, {{first_name}} {{last_name}}!</p>
+    <p>Thanks for registering at steam-deals! Please click on the link below to verify your account 😊</p>
+    <a style="margin-top:1rem; padding: 1rem; border-radius: 0.5rem; font-size: 1rem; text-decoration: none; background: #0275d8; color: white;"
+       href="http://{{host}}:{{port}}/verify?token={{token}}">
+        Verify your email
+    </a>
+
+    <p style="margin-top:1rem;">If you received this email by accident, just ignore the message</p>
+</div>
+</body>
+</html>

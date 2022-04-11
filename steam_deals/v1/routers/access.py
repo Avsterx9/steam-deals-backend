@@ -4,10 +4,15 @@ from fastapi import APIRouter, Depends
 from fastapi import Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from starlette.requests import Request
+from starlette.status import HTTP_400_BAD_REQUEST
 
-from steam_deals.config import settings
-from steam_deals.core import authentication, schemas
+from steam_deals.config import settings, templates
+from steam_deals.core import authentication, schemas, verification
+from steam_deals.core.authentication import get_current_active_user
+from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
+from steam_deals.core.exception import HTTPException
 from steam_deals.core.utils import StatusResponse
 
 access_router = APIRouter()
@@ -31,7 +36,7 @@ async def login_for_access_token(
 
 @access_router.post('/logout', response_model=schemas.StatusResponse)
 async def logout_to_remove_http_only_cookie(
-    current_user: schemas.User = Depends(authentication.get_current_active_user),
+    user: schemas.UserDetailed = Depends(get_current_active_user),
 ):
     # pylint: disable=unused-argument
     # REASON: `current_user` argument is need to properly check if user is already authenticated
@@ -39,3 +44,24 @@ async def logout_to_remove_http_only_cookie(
     response = StatusResponse(detail='Cookie with access_token has been removed')
     response.set_cookie(key='access_token', httponly=True, samesite='strict', max_age=0)
     return response
+
+
+@access_router.get('/sendVerificationMail', response_model=schemas.StatusResponse)
+async def send_email_with_verification_token(user: schemas.UserDetailed = Depends(get_current_active_user)):
+    await verification.send_verification_email(user=user)
+    return StatusResponse(detail=f'Email with verification token has been sent to {user.email}.')
+
+
+@access_router.get('/verify', response_model=schemas.StatusResponse)
+async def verify_by_token_sent_to_email(request: Request, token: str, db: Session = Depends(get_db)):
+    user = verification.verify_email_token(db=db, token=token)
+
+    if user.verified:
+        raise HTTPException(
+            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is already verified!'
+        )
+
+    user.verified = True
+    crud.users.update_user(db=db, user=user)
+
+    return templates.TemplateResponse(name='verified.html', context={'request': request, 'username': user.username})

@@ -14,15 +14,30 @@ class UserIn(UserBase):
     password: str
 
 
-class User(UserBase):
+class UserInDb(UserBase):
+    hashed_password: str
     timestamp: datetime
-    disabled: bool
+    disabled: bool = False
+    admin: bool = False
+    verified: bool = False
+
+
+class UserDetailed(UserBase):
+    timestamp: datetime
+    disabled: bool = False
+    admin: bool = False
+    verified: bool = False
 
     class Config:
         orm_mode = True
 
 
-class UserInDb(UserBase):
-    hashed_password: str
+class UserPublic(BaseModel):
+    username: str
+    first_name: str
     timestamp: datetime
-    disabled: bool
+    disabled: bool = False
+    verified: bool = False
+
+    class Config:
+        orm_mode = True

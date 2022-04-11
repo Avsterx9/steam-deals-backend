@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
 
-from steam_deals.core import schemas
+from steam_deals.core import schemas, verification
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import HTTPException
@@ -12,17 +12,19 @@ from steam_deals.core.exception import HTTPException
 users_router = APIRouter()
 
 
-@users_router.post('/users', response_model=schemas.User, tags=['users'])
-def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):
+@users_router.post('/users', response_model=schemas.UserDetailed, tags=['users'])
+async def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):
     if crud.users.get_user_by_email(db, email=user.email):
         raise HTTPException(status_code=HTTP_409_CONFLICT, detail=f'Email `{user.email}` is already taken')
     if crud.users.get_user_by_username(db, username=user.username):
         raise HTTPException(status_code=HTTP_409_CONFLICT, detail=f'Username `{user.username}` is already taken')
 
-    return crud.users.create_user(db=db, user=user)
+    user = crud.users.create_user(db=db, user=user)
+    await verification.verify_user(db=db, user=user)
+    return user
 
 
-@users_router.get('/users/{username}', response_model=schemas.User, tags=['users'])
+@users_router.get('/users/{username}', response_model=schemas.UserPublic, tags=['users'])
 def read_user(username: str, db: Session = Depends(get_db)):
     user = crud.users.get_user_by_username(db, username=username)
     if user is None:
@@ -30,7 +32,7 @@ def read_user(username: str, db: Session = Depends(get_db)):
     return user
 
 
-@users_router.get('/users', response_model=List[schemas.User], tags=['users'])
+@users_router.get('/users', response_model=List[schemas.UserPublic], tags=['users'])
 def read_users(
     skip: int = 0,
     limit: int = 100,

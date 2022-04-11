@@ -13,3 +13,5 @@ class User(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     disabled = Column(Boolean, nullable=False, default=False)
+    admin = Column(Boolean, nullable=False, default=False)
+    verified = Column(Boolean, nullable=False, default=False)

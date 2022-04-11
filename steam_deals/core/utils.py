@@ -1,4 +1,5 @@
 import http
+from pathlib import Path
 from typing import Any, Dict, Optional
 
 from fastapi.responses import JSONResponse
@@ -13,6 +14,11 @@ def get_version() -> str:
         if repo.index.diff(None) or repo.index.diff('HEAD') or repo.untracked_files
         else repo.head.object.hexsha
     )
+
+
+def read_file_content(filepath: Path) -> str:
+    with open(filepath, encoding='utf-8') as file:
+        return file.read()
 
 
 class StatusResponse(JSONResponse):

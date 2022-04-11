@@ -1,7 +1,8 @@
+from contextvars import ContextVar
 from typing import Generator
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import Session, sessionmaker
 
 from steam_deals.config import settings
 
@@ -18,3 +19,6 @@ def get_db() -> Generator:
         yield db
     finally:
         db.close()
+
+
+db_session: ContextVar[Session] = ContextVar('db_session')
