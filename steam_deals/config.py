@@ -13,6 +13,7 @@ settings = Dynaconf(
     settings_files=['settings.toml', '.secrets.toml'],
     environments=True,
     env_switcher=ENV_SWITCHER,
+    env='DEVELOPMENT_LOCAL',
 )
 
 VERSION: Final[str] = settings.get('VERSION', utils.get_version())
