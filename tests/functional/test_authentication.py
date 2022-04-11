@@ -5,6 +5,8 @@ from requests import Response
 from starlette import status
 from starlette.testclient import TestClient
 
+from tests.functional.conftest import LoginUserMaker, RegisterUserMaker
+
 
 def _build_detail(*args: Optional[dict]) -> list:
     detail = []
@@ -34,7 +36,7 @@ def test_login_for_access_token_successful(login_user: Response):
     ],
 )
 def test_login_for_access_token_credentials_incorrect(
-    username: str, password: str, api_client: TestClient, register_user: Response
+    username: str, password: str, api_client: TestClient, register_user: RegisterUserMaker
 ):
     # pylint: disable=unused-variable
     # REASON: `result_register` is used indirectly by pytest parametrize parameters
@@ -42,7 +44,7 @@ def test_login_for_access_token_credentials_incorrect(
     # ARRANGE
     url = '/token'
 
-    response_register = register_user
+    response_register = register_user()
     result_register = response_register.json()
 
     form_data = {
@@ -91,14 +93,15 @@ def test_login_for_access_token_credentials_missing(
 
 
 @pytest.mark.parametrize('by_header', [False, True], ids=['using HttpOnly cookie', 'using Authorization header'])
-def test_authentication_methods(by_header: bool, login_user: Response, api_client: TestClient):
+def test_authentication_methods(by_header: bool, login_user: LoginUserMaker, api_client: TestClient):
     # ARRANGE
     url = '/me'
     logout_url = '/logout'
     headers = None
 
+    response_login = login_user()
+
     if by_header:
-        response_login = login_user
         result_login = response_login.json()
         api_client.post(url=logout_url)  # deleting HttpOnly cookie to test if authorization by header works also
         headers = {'Authorization': f'Bearer {result_login["access_token"]}'}
