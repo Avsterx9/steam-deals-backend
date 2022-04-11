@@ -7,7 +7,7 @@ from starlette.requests import Request
 from steam_deals.config import settings, VERSION
 from steam_deals.core.exception import HTTPException
 from steam_deals.v1.routers import main_router
-from steam_deals.v1.routers.authentication import auth_router
+from steam_deals.v1.routers.access import access_router
 from steam_deals.v1.routers.me import me_router
 from steam_deals.v1.routers.users import users_router
 
@@ -52,6 +52,6 @@ async def http_exception_handler(request: Request, exception: HTTPException):
 app.include_router(main_router)
 app.include_router(users_router)
 app.include_router(me_router)
-app.include_router(auth_router)
+app.include_router(access_router)
 
 add_cors_middleware(app)

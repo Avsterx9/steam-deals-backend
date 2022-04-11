@@ -10,10 +10,10 @@ from steam_deals.core import authentication, schemas
 from steam_deals.core.db.session import get_db
 from steam_deals.core.utils import StatusResponse
 
-auth_router = APIRouter()
+access_router = APIRouter()
 
 
-@auth_router.post('/token', response_model=schemas.Token)
+@access_router.post('/token', response_model=schemas.Token)
 async def login_for_access_token(
     response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -29,7 +29,7 @@ async def login_for_access_token(
     return schemas.Token(access_token=access_token, expires_in=expires_secs)
 
 
-@auth_router.post('/logout', response_model=schemas.StatusResponse)
+@access_router.post('/logout', response_model=schemas.StatusResponse)
 async def logout_to_remove_http_only_cookie(
     current_user: schemas.User = Depends(authentication.get_current_active_user),
 ):
