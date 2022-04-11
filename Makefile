@@ -17,6 +17,7 @@ clean:
 	rm -r venv/
 
 build:
+	./scripts/secrets-create.sh
 	python3 -m venv venv/
 	. venv/bin/activate
 	pip install -U pip setuptools wheel
