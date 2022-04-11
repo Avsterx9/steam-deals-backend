@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS public.users
     last_name       text                        NOT NULL,
     disabled        boolean                     NOT NULL DEFAULT false,
     admin           boolean                     NOT NULL DEFAULT false,
+    verified        boolean                     NOT NULL DEFAULT false,
     PRIMARY KEY (username)
 );
 
