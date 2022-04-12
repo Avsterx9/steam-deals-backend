@@ -23,10 +23,11 @@ variables:
 .configuration:
   image: $CI_REGISTRY_IMAGE/cicd-image
   before_script:
+    - make build-dev
+    - . venv/bin/activate
+    - which pip
     - python3 -V
     - pip -V
-    - pip install -U pip setuptools wheel
-    - pip install .[dev]
     - mkdir -p artifacts
 
 #==============================| TESTS AND CODE ANALYSIS |==============================
@@ -37,7 +38,7 @@ Lint code:
   allow_failure: true
   script:
     - echo [ Running pylint ]
-    - find -type f -name "*.py" -not -path "./build/*" | xargs pylint
+    - find -type f -name "*.py" -not -path "./venv/*" | xargs pylint
 
 Check code using black:
   stage: test and code analysis
