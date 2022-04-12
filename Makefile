@@ -33,6 +33,12 @@ build-dev:
 	pip install -U pip setuptools wheel; \
 	pip install -e .[dev]
 
+# used only for DEVELOPMENT and PRODUCTION Dockerfiles
+build-docker:
+	./scripts/secrets-create.sh
+	pip install -U pip setuptools wheel
+	pip install --no-cache-dir .
+
 black-check:
 	black . --diff --color
 
