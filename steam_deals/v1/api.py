@@ -7,9 +7,6 @@ from starlette.requests import Request
 from steam_deals.config import settings, VERSION
 from steam_deals.core.exception import HTTPException
 from steam_deals.v1.routers import main_router
-from steam_deals.v1.routers.access import access_router
-from steam_deals.v1.routers.me import me_router
-from steam_deals.v1.routers.users import users_router
 
 app = FastAPI(
     title=settings.PROJECT_TITLE,
@@ -23,6 +20,9 @@ app = FastAPI(
         'name': 'MIT License',
         'url': 'https://opensource.org/licenses/MIT',
     },
+    docs_url='/api/v1/docs',
+    redoc_url='/api/v1/redocs',
+    openapi_url='/api/v1/openapi.json',
 )
 
 
@@ -49,9 +49,6 @@ async def http_exception_handler(request: Request, exception: HTTPException):
     )
 
 
-app.include_router(main_router)
-app.include_router(users_router)
-app.include_router(me_router)
-app.include_router(access_router)
+app.include_router(router=main_router, prefix='/api/v1')
 
 add_cors_middleware(app)

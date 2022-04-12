@@ -13,7 +13,7 @@ from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION, HTTPException
 from steam_deals.core.security import OAuth2PasswordBearerWithCookie
 
-oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl='/token')
+oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl='/api/v1/token')
 
 
 def authenticate_user(db: Session, username: str, password: str) -> schemas.UserInDb:

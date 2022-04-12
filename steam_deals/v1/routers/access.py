@@ -18,7 +18,7 @@ from steam_deals.core.utils import StatusResponse
 access_router = APIRouter()
 
 
-@access_router.post('/token', response_model=schemas.Token)
+@access_router.post('/token', response_model=schemas.Token, tags=['auth'])
 async def login_for_access_token(
     response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
@@ -34,7 +34,7 @@ async def login_for_access_token(
     return schemas.Token(access_token=access_token, expires_in=expires_secs)
 
 
-@access_router.post('/logout', response_model=schemas.StatusResponse)
+@access_router.post('/logout', response_model=schemas.StatusResponse, tags=['auth'])
 async def logout_to_remove_http_only_cookie(
     user: schemas.UserDetailed = Depends(get_current_active_user),
 ):
@@ -46,13 +46,13 @@ async def logout_to_remove_http_only_cookie(
     return response
 
 
-@access_router.get('/sendVerificationMail', response_model=schemas.StatusResponse)
+@access_router.get('/sendVerificationMail', response_model=schemas.StatusResponse, tags=['auth'])
 async def send_email_with_verification_token(user: schemas.UserDetailed = Depends(get_current_active_user)):
     await verification.send_verification_email(user=user)
     return StatusResponse(detail=f'Email with verification token has been sent to {user.email}.')
 
 
-@access_router.get('/verify', response_model=schemas.StatusResponse)
+@access_router.get('/verify', response_model=schemas.StatusResponse, tags=['auth'])
 async def verify_by_token_sent_to_email(request: Request, token: str, db: Session = Depends(get_db)):
     user = verification.verify_email_token(db=db, token=token)
 
