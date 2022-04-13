@@ -4,7 +4,7 @@ from typing import Optional
 from fastapi import Depends
 from jose import jwt, JWTError
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
 
 from steam_deals.config import settings
 from steam_deals.core import schemas, security
@@ -53,15 +53,13 @@ async def get_current_user(db: Session = Depends(get_db), token: str = Depends(o
 
 async def get_current_active_user(user: schemas.UserInDb = Depends(get_current_user)) -> schemas.UserInDb:
     if user.disabled:
-        raise HTTPException(
-            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is inactive!'
-        )
+        raise HTTPException(status_code=HTTP_403_FORBIDDEN, detail=f'User with username `{user.username}` is inactive!')
     return user
 
 
 async def get_current_verified_user(user: schemas.UserInDb = Depends(get_current_active_user)) -> schemas.UserInDb:
     if not user.verified:
         raise HTTPException(
-            status_code=HTTP_400_BAD_REQUEST, detail=f'User with username `{user.username}` is not verified!'
+            status_code=HTTP_403_FORBIDDEN, detail=f'User with username `{user.username}` is not verified!'
         )
     return user

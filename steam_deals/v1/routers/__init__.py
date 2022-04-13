@@ -9,7 +9,7 @@ main_router = APIRouter()  # need for defining tags order
 index_router = APIRouter()
 
 
-@index_router.get('/', response_model=schemas.Index, description='base `/` endpoint with API details', tags=['index'])
+@index_router.get('/', response_model=schemas.Index, tags=['index'], description='Base `/` endpoint with API details.')
 async def index():
     return schemas.Index()
 

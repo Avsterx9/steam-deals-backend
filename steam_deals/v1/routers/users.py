@@ -8,11 +8,20 @@ from steam_deals.core import schemas, verification
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import HTTPException
+from steam_deals.core.utils import create_status_responses
 
 users_router = APIRouter()
 
 
-@users_router.post('/users', response_model=schemas.UserDetailed, tags=['users'])
+@users_router.post(
+    path='/users',
+    response_model=schemas.UserDetailed,
+    tags=['users'],
+    description='Used to create a `new` user.',
+    responses=create_status_responses(
+        {HTTP_409_CONFLICT: 'When the given `username` / `email address` is already taken.'}
+    ),
+)
 async def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):
     if crud.users.get_user_by_email(db, email=user.email):
         raise HTTPException(status_code=HTTP_409_CONFLICT, detail=f'Email `{user.email}` is already taken')
@@ -24,7 +33,13 @@ async def create_user(user: schemas.UserIn, db: Session = Depends(get_db)):
     return user
 
 
-@users_router.get('/users/{username}', response_model=schemas.UserPublic, tags=['users'])
+@users_router.get(
+    path='/users/{username}',
+    response_model=schemas.UserPublic,
+    tags=['users'],
+    description='Get info about the registered user with the provided `username`.',
+    responses=create_status_responses({HTTP_404_NOT_FOUND: 'When a user with the given username was `not found`.'}),
+)
 def read_user(username: str, db: Session = Depends(get_db)):
     user = crud.users.get_user_by_username(db, username=username)
     if user is None:
@@ -32,7 +47,13 @@ def read_user(username: str, db: Session = Depends(get_db)):
     return user
 
 
-@users_router.get('/users', response_model=List[schemas.UserPublic], tags=['users'])
+@users_router.get(
+    '/users',
+    response_model=List[schemas.UserPublic],
+    tags=['users'],
+    description='Get info about `all` registered users.',
+    responses=create_status_responses({HTTP_404_NOT_FOUND: 'When `no user` with the given parameters was found.'}),
+)
 def read_users(
     skip: int = 0,
     limit: int = 100,

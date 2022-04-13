@@ -21,6 +21,15 @@ def read_file_content(filepath: Path) -> str:
         return file.read()
 
 
+def create_status_response(status_code: int, description: str) -> dict:
+    status_response = StatusResponse(status_code=status_code)
+    return {'description': description, 'content': {'application/json': {'example': status_response.as_dict()}}}
+
+
+def create_status_responses(response_with_description: Dict[int, str]) -> Dict[int, Any]:
+    return {key: {**create_status_response(key, value)} for key, value in response_with_description.items()}
+
+
 class StatusResponse(JSONResponse):
     def __init__(self, status_code: int = 200, detail: str = None, headers: Optional[Dict[str, Any]] = None):
         content = {
@@ -36,4 +45,11 @@ class StatusResponse(JSONResponse):
 
     def __repr__(self) -> str:
         class_name = self.__class__.__name__
-        return f"{class_name}(status_code={self.status_code!r}, detail={self.detail!r})"
+        return f"{class_name}(status_code={self.status_code!r}, phrase={self.phrase!r}, detail={self.detail!r})"
+
+    def as_dict(self):
+        return {
+            'status_code': self.status_code,
+            'phrase': self.phrase,
+            'detail': self.detail if self.detail else 'string',
+        }
