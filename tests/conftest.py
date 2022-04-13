@@ -1,5 +1,5 @@
 import os
-from typing import Protocol
+from typing import Final, Protocol
 
 from fastapi.testclient import TestClient
 import pytest
@@ -11,6 +11,8 @@ from steam_deals.core import schemas
 from steam_deals.core.db.base_class import Base
 from steam_deals.core.db.session import get_db
 from steam_deals.v1.api import add_cors_middleware, app
+
+API_BASE_URL: Final[str] = '/api/v1'
 
 
 @pytest.fixture(name='_set_test_settings', scope='session', autouse=True)

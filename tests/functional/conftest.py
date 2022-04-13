@@ -8,6 +8,7 @@ from starlette.testclient import TestClient
 
 from steam_deals.core import schemas, verification
 from steam_deals.core.db import crud
+from tests.conftest import API_BASE_URL
 
 
 @pytest.fixture(name='example_user', scope='session')
@@ -30,7 +31,7 @@ class RegisterUserMaker(Protocol):
 def fixture_register_user(example_user: dict, api_client: TestClient, monkeypatch) -> RegisterUserMaker:
     def _register_user(verified: bool = True) -> Response:
         # ARRANGE
-        url = '/users'
+        url = f'{API_BASE_URL}/users'
 
         # make user verified or not - for tests, depending on the fixture parameter
         async def _verify_user(db: Session, user: schemas.UserDetailed):
@@ -66,7 +67,7 @@ class LoginUserMaker(Protocol):
 def fixture_login_user(register_user: RegisterUserMaker, api_client: TestClient) -> LoginUserMaker:
     def _login_user(verified: bool = True) -> Response:
         # ARRANGE
-        url = '/token'
+        url = f'{API_BASE_URL}/token'
         response_register = register_user(verified=verified)
         result_register = response_register.json()
 

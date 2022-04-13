@@ -1,6 +1,7 @@
 from starlette import status
 from starlette.testclient import TestClient
 
+from tests.conftest import API_BASE_URL
 from tests.functional.conftest import LoginUserMaker
 
 
@@ -9,7 +10,7 @@ def test_me_endpoint_successful(example_user: dict, login_user: LoginUserMaker, 
     # REASON: the `login_user` argument is used indirectly - we need to login before reaching `/me` endpoint
 
     # ARRANGE
-    url = '/me'
+    url = f'{API_BASE_URL}/me/info'
     login_user(verified=False)
 
     # ACT
@@ -32,7 +33,7 @@ def test_me_verified_endpoint_successful(example_user: dict, login_user: LoginUs
     # REASON: the `login_user` argument is used indirectly - we need to login before reaching `/me` endpoint
 
     # ARRANGE
-    url = '/meVerified'
+    url = f'{API_BASE_URL}/me/infoVerified'
     login_user(verified=True)
 
     # ACT

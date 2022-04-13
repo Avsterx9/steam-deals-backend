@@ -2,6 +2,8 @@ import pytest
 from starlette import status
 from starlette.testclient import TestClient
 
+from tests.conftest import API_BASE_URL
+
 
 def test_create_user(register_user):
     # pylint: disable=unused-argument
@@ -12,7 +14,7 @@ def test_create_user(register_user):
 @pytest.mark.parametrize('key', ['username', 'email', 'password', 'first_name', 'last_name'])
 def test_create_user_without_key(api_client: TestClient, key: str):
     # ARRANGE
-    url = '/users'
+    url = f'{API_BASE_URL}/users'
     body = {
         'username': 'doesnt_matter',
         'email': 'doesnt@matter.com',

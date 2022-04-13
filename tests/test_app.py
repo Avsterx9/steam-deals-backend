@@ -3,7 +3,7 @@ import git
 from starlette.testclient import TestClient
 
 from steam_deals.config import settings
-from tests.conftest import IndexResponseMaker
+from tests.conftest import API_BASE_URL, IndexResponseMaker
 
 
 def test_if_test_settings():
@@ -18,7 +18,7 @@ def test_if_test_settings():
 
 def test_api_connection(api_client: TestClient):
     # ACT
-    response = api_client.get('/')
+    response = api_client.get(API_BASE_URL)
 
     # ASSERT
     assert response.status_code == status.HTTP_200_OK
@@ -30,7 +30,7 @@ def test_index(api_client: TestClient, index_response: IndexResponseMaker):
     sha = repo.head.object.hexsha
 
     # ACT
-    response = api_client.get('/')
+    response = api_client.get(API_BASE_URL)
     result = response.json()
 
     # ASSERT

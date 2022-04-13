@@ -5,6 +5,7 @@ from requests import Response
 from starlette import status
 from starlette.testclient import TestClient
 
+from tests.conftest import API_BASE_URL
 from tests.functional.conftest import LoginUserMaker, RegisterUserMaker
 
 
@@ -42,7 +43,7 @@ def test_login_for_access_token_credentials_incorrect(
     # REASON: `result_register` is used indirectly by pytest parametrize parameters
 
     # ARRANGE
-    url = '/token'
+    url = f'{API_BASE_URL}/token'
 
     response_register = register_user()
     result_register = response_register.json()
@@ -80,7 +81,7 @@ def test_login_for_access_token_credentials_missing(
     username_dict: Optional[dict], password_dict: Optional[dict], api_client: TestClient
 ):
     # ARRANGE
-    url = '/token'
+    url = f'{API_BASE_URL}/token'
     form_data = {**username_dict, **password_dict}
 
     # ACT
@@ -95,7 +96,7 @@ def test_login_for_access_token_credentials_missing(
 @pytest.mark.parametrize('by_header', [False, True], ids=['using HttpOnly cookie', 'using Authorization header'])
 def test_authentication_methods(by_header: bool, login_user: LoginUserMaker, api_client: TestClient):
     # ARRANGE
-    url = '/me'
+    url = f'{API_BASE_URL}/me/info'
     logout_url = '/logout'
     headers = None
 
