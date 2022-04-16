@@ -14,7 +14,7 @@ help:
 	@echo "     run - run application"
 
 build-clean: clean build
-build-dev-clean: clean build
+build-dev-clean: clean build-dev
 
 clean:
 	rm -r venv/
