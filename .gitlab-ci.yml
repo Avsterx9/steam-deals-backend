@@ -48,6 +48,14 @@ Check code using black:
     - echo [ Running black ]
     - black . --check --diff --color
 
+Check imports order:
+  stage: test and code analysis
+  extends: .configuration
+  allow_failure: true
+  script:
+    - echo [ Running isort ]
+    - isort . --check --diff --color
+
 Launch tests:
   stage: test and code analysis
   extends: .configuration
