@@ -17,3 +17,7 @@ addopts = [
     '--cov-report=html:artifacts/htmlcov',
     '--cov-report=xml:artifacts/coverage.xml',
 ]
+
+[tool.isort]
+line_length = 120
+force_single_line = true

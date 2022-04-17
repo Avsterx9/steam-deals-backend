@@ -13,12 +13,17 @@ repos:
         entry: black
         language: system
         types: [ python ]
-      - id: pylint
-        name: Lint code with pylint
-        entry: pylint
+      - id: isort
+        name: Reorder python imports
+        entry: isort
         language: system
         types: [ python ]
       - id: forbidden-files
         name: Check for forbidden files
         entry: scripts/check-forbidden-files.sh
         language: script
+      - id: pylint
+        name: Lint code with pylint
+        entry: pylint
+        language: system
+        types: [ python ]
