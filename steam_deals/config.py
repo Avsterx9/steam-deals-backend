@@ -2,9 +2,8 @@ from pathlib import Path
 from typing import Final
 
 from dynaconf import Dynaconf
+import git
 from starlette.templating import Jinja2Templates
-
-from steam_deals.core import utils
 
 ROOT_DIRECTORY: Final[Path] = Path(__file__).parent
 ENV_SWITCHER: Final[str] = 'ENVIRONMENT_NAME'
@@ -19,4 +18,15 @@ settings = Dynaconf(
     env='DEVELOPMENT_LOCAL',
 )
 
-VERSION: Final[str] = settings.get('VERSION', utils.get_version())
+
+def get_version() -> str:
+    repo = git.Repo(search_parent_directories=True)
+    # if there are any changes (staged, tracked or untracked) do not refer the SHA of last commit
+    return (
+        'UNCOMMITTED'
+        if repo.index.diff(None) or repo.index.diff('HEAD') or repo.untracked_files
+        else repo.head.object.hexsha
+    )
+
+
+VERSION: Final[str] = settings.get('VERSION', get_version())
