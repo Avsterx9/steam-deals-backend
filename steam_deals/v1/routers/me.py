@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from fastapi import APIRouter
+from fastapi import Depends
+from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_403_FORBIDDEN
 
 from steam_deals.core import schemas
-from steam_deals.core.authentication import get_current_active_user, get_current_verified_user
+from steam_deals.core.authentication import get_current_active_user
+from steam_deals.core.authentication import get_current_verified_user
 from steam_deals.core.utils import create_status_responses
 
 me_router = APIRouter()

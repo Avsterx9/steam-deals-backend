@@ -1,16 +1,21 @@
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from typing import Optional
 
 from fastapi import Depends
-from jose import jwt, JWTError
+from jose import JWTError
+from jose import jwt
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_403_FORBIDDEN
 
 from steam_deals.config import settings
-from steam_deals.core import schemas, security
+from steam_deals.core import schemas
+from steam_deals.core import security
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
-from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION, HTTPException
+from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION
+from steam_deals.core.exception import HTTPException
 from steam_deals.core.security import OAuth2PasswordBearerWithCookie
 
 oauth2_scheme = OAuth2PasswordBearerWithCookie(tokenUrl='/api/v1/token')

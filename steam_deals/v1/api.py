@@ -4,7 +4,8 @@ from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.requests import Request
 
-from steam_deals.config import settings, VERSION
+from steam_deals.config import VERSION
+from steam_deals.config import settings
 from steam_deals.core.exception import HTTPException
 from steam_deals.v1.routers import main_router
 

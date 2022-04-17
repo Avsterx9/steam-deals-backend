@@ -6,7 +6,8 @@ from sqlalchemy.orm import Session
 from starlette import status
 from starlette.testclient import TestClient
 
-from steam_deals.core import schemas, verification
+from steam_deals.core import schemas
+from steam_deals.core import verification
 from steam_deals.core.db import crud
 from tests.conftest import API_BASE_URL
 

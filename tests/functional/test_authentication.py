@@ -6,7 +6,8 @@ from starlette import status
 from starlette.testclient import TestClient
 
 from tests.conftest import API_BASE_URL
-from tests.functional.conftest import LoginUserMaker, RegisterUserMaker
+from tests.functional.conftest import LoginUserMaker
+from tests.functional.conftest import RegisterUserMaker
 
 
 def _build_detail(*args: Optional[dict]) -> list:

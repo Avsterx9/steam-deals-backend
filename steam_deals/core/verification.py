@@ -2,16 +2,23 @@ from datetime import timedelta
 from pathlib import Path
 from typing import Final
 
-from fastapi_mail import ConnectionConfig, FastMail, MessageSchema
+from fastapi_mail import ConnectionConfig
+from fastapi_mail import FastMail
+from fastapi_mail import MessageSchema
 from jinja2 import Template
-from jose import jwt, JWTError
+from jose import JWTError
+from jose import jwt
 from sqlalchemy.orm import Session
 from starlette.status import HTTP_400_BAD_REQUEST
 
-from steam_deals.config import ROOT_DIRECTORY, settings
-from steam_deals.core import authentication, schemas, utils
+from steam_deals.config import ROOT_DIRECTORY
+from steam_deals.config import settings
+from steam_deals.core import authentication
+from steam_deals.core import schemas
+from steam_deals.core import utils
 from steam_deals.core.db import crud
-from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION, HTTPException
+from steam_deals.core.exception import CREDENTIALS_VALIDATION_EXCEPTION
+from steam_deals.core.exception import HTTPException
 
 EMAIL_TEMPLATE: Final[Path] = ROOT_DIRECTORY / 'core/templates/email_template.html'
 

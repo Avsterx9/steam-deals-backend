@@ -1,9 +1,10 @@
-from fastapi import status
 import git
+from fastapi import status
 from starlette.testclient import TestClient
 
 from steam_deals.config import settings
-from tests.conftest import API_BASE_URL, IndexResponseMaker
+from tests.conftest import API_BASE_URL
+from tests.conftest import IndexResponseMaker
 
 
 def test_if_test_settings():

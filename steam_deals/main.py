@@ -5,7 +5,9 @@ from typing import Sequence
 
 import uvicorn
 
-from steam_deals.config import ROOT_DIRECTORY, settings, VERSION
+from steam_deals.config import ROOT_DIRECTORY
+from steam_deals.config import VERSION
+from steam_deals.config import settings
 from steam_deals.core.db.base_class import Base
 from steam_deals.core.db.session import engine
 from steam_deals.core.logger import logger_setup

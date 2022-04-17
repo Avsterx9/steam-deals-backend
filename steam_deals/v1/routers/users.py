@@ -1,10 +1,14 @@
-from typing import List, Optional
+from typing import List
+from typing import Optional
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+from fastapi import Depends
 from sqlalchemy.orm import Session
-from starlette.status import HTTP_404_NOT_FOUND, HTTP_409_CONFLICT
+from starlette.status import HTTP_404_NOT_FOUND
+from starlette.status import HTTP_409_CONFLICT
 
-from steam_deals.core import schemas, verification
+from steam_deals.core import schemas
+from steam_deals.core import verification
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import HTTPException

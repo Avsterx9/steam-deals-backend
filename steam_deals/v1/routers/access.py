@@ -1,20 +1,28 @@
 from datetime import timedelta
 from typing import Final
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
+from fastapi import Depends
 from fastapi import Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from starlette.requests import Request
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_403_FORBIDDEN
+from starlette.status import HTTP_400_BAD_REQUEST
+from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_403_FORBIDDEN
 
-from steam_deals.config import settings, templates
-from steam_deals.core import authentication, schemas, verification
-from steam_deals.core.authentication import get_current_active_user, get_current_user
+from steam_deals.config import settings
+from steam_deals.config import templates
+from steam_deals.core import authentication
+from steam_deals.core import schemas
+from steam_deals.core import verification
+from steam_deals.core.authentication import get_current_active_user
+from steam_deals.core.authentication import get_current_user
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import HTTPException
-from steam_deals.core.utils import create_status_responses, StatusResponse
+from steam_deals.core.utils import StatusResponse
+from steam_deals.core.utils import create_status_responses
 
 TOKEN_DESC: Final[str] = (
     'Responds with `HttpOnly cookie` which contains `JWT token` needed for authentication. Token is also'

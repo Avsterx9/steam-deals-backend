@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Final
 
-from dynaconf import Dynaconf
 import git
+from dynaconf import Dynaconf
 from starlette.templating import Jinja2Templates
 
 ROOT_DIRECTORY: Final[Path] = Path(__file__).parent

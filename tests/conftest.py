@@ -1,16 +1,20 @@
 import os
-from typing import Final, Protocol
+from typing import Final
+from typing import Protocol
 
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session
+from sqlalchemy.orm import sessionmaker
 
-from steam_deals.config import ENV_SWITCHER, settings
+from steam_deals.config import ENV_SWITCHER
+from steam_deals.config import settings
 from steam_deals.core import schemas
 from steam_deals.core.db.base_class import Base
 from steam_deals.core.db.session import get_db
-from steam_deals.v1.api import add_cors_middleware, app
+from steam_deals.v1.api import add_cors_middleware
+from steam_deals.v1.api import app
 
 API_BASE_URL: Final[str] = '/api/v1'
 

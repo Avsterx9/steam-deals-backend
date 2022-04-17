@@ -4,7 +4,9 @@ from typing import List
 import pytz
 from sqlalchemy.orm import Session
 
-from steam_deals.core import models, schemas, security
+from steam_deals.core import models
+from steam_deals.core import schemas
+from steam_deals.core import security
 from steam_deals.core.schemas import UserDetailed
 
 

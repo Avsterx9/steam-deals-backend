@@ -1,4 +1,7 @@
-from sqlalchemy import Boolean, Column, DateTime, String
+from sqlalchemy import Boolean
+from sqlalchemy import Column
+from sqlalchemy import DateTime
+from sqlalchemy import String
 
 from steam_deals.core.db.base_class import Base
 
