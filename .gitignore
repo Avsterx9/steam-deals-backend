@@ -10,3 +10,4 @@ dist/
 *.db
 artifacts/
 .secrets.toml
+logs/

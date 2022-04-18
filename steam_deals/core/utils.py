@@ -6,6 +6,20 @@ from typing import Optional
 
 from fastapi.responses import JSONResponse
 
+from steam_deals.config import LAUNCH_DATETIME
+from steam_deals.config import ROOT_DIRECTORY
+
+
+def create_log_file(log_filename: str) -> Path:
+
+    (ROOT_DIRECTORY.parent / 'logs').mkdir(parents=True, exist_ok=True)
+
+    path = ROOT_DIRECTORY.parent / f'logs/{log_filename} {LAUNCH_DATETIME}.log'
+    with open(path, 'w', encoding='utf-8'):
+        pass
+
+    return path
+
 
 def read_file_content(filepath: Path) -> str:
     with open(filepath, encoding='utf-8') as file:

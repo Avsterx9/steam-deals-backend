@@ -1,6 +1,5 @@
 [default]
-DEBUG = true
-LOG_LEVEL = 'info'
+LOG_LEVEL = 'DEBUG'
 PROJECT_TITLE = 'steam-deals project backend API 🚀'
 PROJECT_DESC = 'project carried out during `application development tools` classes.'
 ALGORITHM = 'HS256'

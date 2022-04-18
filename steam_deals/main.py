@@ -1,18 +1,18 @@
 import argparse
-import logging
+import logging.config
 import sys
 from typing import Sequence
 
-import uvicorn
+from uvicorn import Config
+from uvicorn import Server
 
-from steam_deals.config import ROOT_DIRECTORY
 from steam_deals.config import VERSION
 from steam_deals.config import settings
 from steam_deals.core.db.base_class import Base
-from steam_deals.core.db.session import engine
-from steam_deals.core.logger import logger_setup
+from steam_deals.core.logger import LogConfig
 
-log = logging.getLogger(ROOT_DIRECTORY.stem)
+logging.config.dictConfig(LogConfig(log_level=settings.LOG_LEVEL).dict())
+log = logging.getLogger('steam_deals')
 
 
 def init_argparse(args: Sequence[str]) -> argparse.Namespace:
@@ -26,7 +26,7 @@ def init_argparse(args: Sequence[str]) -> argparse.Namespace:
 
 
 def main():
-    logger_setup(level=settings.LOG_LEVEL.upper())
+    log.debug('DEBUGGING MODE IS ENABLED')
     log.info(f'VERSION: {VERSION}')
     log.info(f'ENVIRONMENT: {settings.ENV_FOR_DYNACONF}')
 
@@ -36,15 +36,23 @@ def main():
         log.critical(f'Error in  `{settings.ENV_FOR_DYNACONF}` ENVIRONMENT')
         raise AttributeError(f'ENVIRONMENT `{settings.ENV_FOR_DYNACONF}` doest not exist / has missing args ') from None
 
+    # pylint: disable= import-outside-toplevel
+    # Wee need to import after try except block if we want to catch this error
+    from steam_deals.core.db.session import engine
+
     Base.metadata.create_all(bind=engine)
 
-    uvicorn.run(
-        app='steam_deals.v1.api:app',
-        host=args.host,
-        port=args.port,
-        debug=settings.DEBUG,
-        log_level=settings.LOG_LEVEL.lower(),
+    server = Server(
+        Config(
+            app='steam_deals.v1.api:app',
+            host=args.host,
+            port=args.port,
+            debug=settings.LOG_LEVEL.upper() == 'DEBUG',
+            log_level=settings.LOG_LEVEL.lower(),
+        )
     )
+
+    server.run()
 
 
 if __name__ == '__main__':

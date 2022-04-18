@@ -1,3 +1,4 @@
+import datetime
 from pathlib import Path
 from typing import Final
 
@@ -7,6 +8,8 @@ from starlette.templating import Jinja2Templates
 
 ROOT_DIRECTORY: Final[Path] = Path(__file__).parent
 ENV_SWITCHER: Final[str] = 'ENVIRONMENT_NAME'
+
+LAUNCH_DATETIME: Final[datetime.datetime] = datetime.datetime.now()
 
 templates = Jinja2Templates(directory=ROOT_DIRECTORY / 'core/templates')
 
