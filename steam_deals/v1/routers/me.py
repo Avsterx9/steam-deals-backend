@@ -23,7 +23,7 @@ me_router = APIRouter()
         },
     ),
 )
-async def read_info_about_logged_user(user: schemas.UserDetailed = Depends(get_current_active_user)):
+def read_info_about_logged_user(user: schemas.UserDetailed = Depends(get_current_active_user)):
     return user
 
 
@@ -39,5 +39,5 @@ async def read_info_about_logged_user(user: schemas.UserDetailed = Depends(get_c
         },
     ),
 )
-async def read_info_about_logged_user_if_verified(user: schemas.UserDetailed = Depends(get_current_verified_user)):
+def read_info_about_logged_user_if_verified(user: schemas.UserDetailed = Depends(get_current_verified_user)):
     return user

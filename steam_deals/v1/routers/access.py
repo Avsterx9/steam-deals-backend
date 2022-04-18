@@ -44,7 +44,7 @@ access_router = APIRouter()
     description=TOKEN_DESC,
     responses=create_status_responses({HTTP_401_UNAUTHORIZED: 'When given credentials are `invalid`.'}),
 )
-async def login_for_access_token(
+def login_for_access_token(
     response: Response, db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()
 ):
     user = authentication.authenticate_user(db=db, username=form_data.username, password=form_data.password)
@@ -68,7 +68,7 @@ async def login_for_access_token(
         {HTTP_401_UNAUTHORIZED: 'Problem with the `JWT token` (user does not exist / token invalid).'}
     ),
 )
-async def logout_to_remove_http_only_cookie(
+def logout_to_remove_http_only_cookie(
     user: schemas.UserDetailed = Depends(get_current_user),
 ):
     # pylint: disable=unused-argument
@@ -109,7 +109,7 @@ async def resend_email_with_verification_token(user: schemas.UserDetailed = Depe
         },
     ),
 )
-async def verify_by_token_sent_to_email(request: Request, token: str, db: Session = Depends(get_db)):
+def verify_by_token_sent_to_email(request: Request, token: str, db: Session = Depends(get_db)):
     user = verification.verify_email_token(db=db, token=token)
 
     if user.verified:
