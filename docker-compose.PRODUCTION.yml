@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  web:
+    image: steam-deals-backend_web
+#    build:
+#      context: .
+#      dockerfile: Dockerfile.DEVELOPMENT
+    command: gunicorn steam_deals.v1.api:app --bind 0.0.0.0:5000 -w 4 -k uvicorn.workers.UvicornWorker --access-logfile -
+    ports:
+      - "5000:5000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`0.0.0.0`)"
+      - "traefik.http.routers.fastapi.tls=true"
+      - "traefik.http.routers.fastapi.tls.certresolver=letsencrypt"
+
+  traefik:
+    image: traefik:v2.6.3
+    ports:
+      - "5005:80"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "$PWD/traefik.PRODUCTION.toml:/etc/traefik/traefik.toml"

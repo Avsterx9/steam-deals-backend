@@ -1,0 +1,21 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.DEVELOPMENT
+    ports:
+      - "5555:5555"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.fastapi.rule=Host(`fastapi.localhost`)"
+
+  traefik:
+    image: traefik:v2.6.3
+    ports:
+      - "84:80"
+      - "8084:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "$PWD/traefik.dev.toml:/etc/traefik/traefik.toml"
