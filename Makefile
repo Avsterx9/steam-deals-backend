@@ -17,7 +17,7 @@ build-clean: clean build
 build-dev-clean: clean build-dev
 
 clean:
-	rm -r venv/
+	rm -r -f venv/
 
 build:
 	./scripts/secrets-create.sh

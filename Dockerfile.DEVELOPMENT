@@ -23,7 +23,7 @@ ADD . /app
 WORKDIR /app
 
 
-RUN make build
+RUN make build-clean
 
 ENV PATH="venv/bin:$PATH"
 
