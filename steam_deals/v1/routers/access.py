@@ -25,12 +25,12 @@ from steam_deals.core.utils import StatusResponse
 from steam_deals.core.utils import create_status_responses
 
 TOKEN_DESC: Final[str] = (
-    'Responds with `HttpOnly cookie` which contains `JWT token` needed for authentication. Token is also'
-    ' included in the `response body` so you can decide which authentication method you want to use.'
+    'Responds with `HttpOnly cookie` which contains `JWT token` needed for authentication. Token is also '
+    + 'included in the `response body` so you can decide which authentication method you want to use.'
 )
 LOGOUT_DESC: Final[str] = 'Needed only when you re authenticating with `HttpOnly cookie`. It removes that cookie.'
 RESEND_VERIFICATION_MAIL_DESC: Final[str] = (
-    'Used to resend the `verification email` as it may expire if the' ' user does not open it in time.'
+    'Used to resend the `verification email` as it may expire if the ' + 'user does not open it in time.'
 )
 VERIFY_DESC: Final[str] = 'Used to `verify` the user with a token sent by e-mail.'
 
@@ -79,7 +79,7 @@ def logout_to_remove_http_only_cookie(
     return response
 
 
-@access_router.get(
+@access_router.post(
     path='/resendVerificationMail',
     response_model=schemas.StatusResponse,
     tags=['auth'],
