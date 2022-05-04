@@ -3,8 +3,7 @@ import logging.config
 import sys
 from typing import Sequence
 
-from uvicorn import Config
-from uvicorn import Server
+import uvicorn
 
 from steam_deals.config import VERSION
 from steam_deals.config import settings
@@ -42,17 +41,13 @@ def main():
 
     Base.metadata.create_all(bind=engine)
 
-    server = Server(
-        Config(
-            app='steam_deals.v1.api:app',
-            host=args.host,
-            port=args.port,
-            debug=settings.LOG_LEVEL.upper() == 'DEBUG',
-            log_level=settings.LOG_LEVEL.lower(),
-        )
+    uvicorn.run(
+        app='steam_deals.v1.api:app',
+        host=args.host,
+        port=args.port,
+        debug=settings.LOG_LEVEL.upper() == 'DEBUG',
+        log_level=settings.LOG_LEVEL.lower(),
     )
-
-    server.run()
 
 
 if __name__ == '__main__':

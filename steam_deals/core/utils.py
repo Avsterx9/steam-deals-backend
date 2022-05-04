@@ -1,4 +1,6 @@
+import datetime
 import http
+import logging
 from pathlib import Path
 from typing import Any
 from typing import Dict
@@ -9,9 +11,23 @@ from fastapi.responses import JSONResponse
 from steam_deals.config import LAUNCH_DATETIME
 from steam_deals.config import ROOT_DIRECTORY
 
+log = logging.getLogger('steam_deals')
+
+
+def parse_date(date: str) -> Optional[datetime.datetime]:
+    date_patterns = ['%d %b, %Y', '%b %d, %Y', '%b %Y']
+
+    for pattern in date_patterns:
+        try:
+            return datetime.datetime.strptime(date, pattern)
+        except ValueError as exception:
+            log.info(f'Exception caught: {exception} while trying to parse: {date}')
+
+    log.critical('Date is not in expected format: {date}')
+    return None
+
 
 def create_log_file(log_filename: str) -> Path:
-
     (ROOT_DIRECTORY.parent / 'logs').mkdir(parents=True, exist_ok=True)
 
     path = ROOT_DIRECTORY.parent / f'logs/{log_filename} {LAUNCH_DATETIME}.log'

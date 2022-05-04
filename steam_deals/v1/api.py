@@ -1,3 +1,5 @@
+import logging.config
+
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from starlette.applications import Starlette
@@ -7,7 +9,13 @@ from starlette.requests import Request
 from steam_deals.config import VERSION
 from steam_deals.config import settings
 from steam_deals.core.exception import HTTPException
+from steam_deals.core.logger import LogConfig
 from steam_deals.v1.routers import main_router
+
+logging.config.dictConfig(LogConfig(log_level=settings.LOG_LEVEL).dict())
+
+log = logging.getLogger('steam_deals')
+
 
 app = FastAPI(
     title=settings.PROJECT_TITLE,
@@ -48,6 +56,11 @@ async def http_exception_handler(request: Request, exception: HTTPException):
         headers=exception.headers,
         content={'status_code': exception.status_code, 'phrase': exception.phrase, 'detail': exception.detail},
     )
+
+
+@app.on_event('startup')
+async def startup_event():
+    log.info('Application started!')
 
 
 app.include_router(router=main_router, prefix='/api/v1')
