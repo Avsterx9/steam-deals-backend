@@ -7,8 +7,6 @@ from typing import List
 from typing import Optional
 from typing import Set
 
-from starlette.status import HTTP_404_NOT_FOUND
-
 from steam_deals.core import schemas
 from steam_deals.core import utils
 from steam_deals.core.exception import HTTPException
@@ -16,13 +14,12 @@ from steam_deals.core.requests import get_request
 
 log = logging.getLogger('steam_deals')
 
-URL_STEAMSPY_APP_DETAILS: Final[str] = 'https://steamspy.com/api.php?request=appdetails'
-URL_STEAMSPY_TOP100_2WEEKS: Final[str] = 'https://steamspy.com/api.php?request=top100in2weeks'
+URL_STEAMSPY: Final[str] = 'https://steamspy.com/api.php'
 URL_STEAM_POWERED_APP_DETAILS: Final[str] = 'https://store.steampowered.com/api/appdetails'
 URL_HEADER_IMAGE: Final[str] = 'https://steamcdn-a.akamaihd.net/steam/apps/:app_id:/header.jpg'
 
 
-def create_app_base_object(app: dict, index: int = None) -> schemas.AppBase:
+def create_app_base_object(app: dict, index: Optional[int] = None) -> schemas.AppBase:
     # pylint: disable=too-many-locals
 
     steam_appid = app['appid']
@@ -57,7 +54,7 @@ def create_app_base_object(app: dict, index: int = None) -> schemas.AppBase:
     if price_initial := app.get('initialprice', None):
         price['initial'] = int(price_initial) / 100
 
-    if price['initial'] and price['final']:
+    if price.get('initial', None) and price.get('final', None):
         price['discount'] = round((1 - price['final'] / price['initial']) * 100, 2)
 
     container = {
@@ -78,7 +75,7 @@ def create_app_base_object(app: dict, index: int = None) -> schemas.AppBase:
 
 
 def get_top100_in_2weeks_apps(skip: int, amount: int) -> List[schemas.AppBase]:
-    result = get_request(url=URL_STEAMSPY_TOP100_2WEEKS)
+    result = get_request(url=URL_STEAMSPY, params={'request': 'top100in2weeks'})
     playtime_avg_sorted_app_ids = sorted(result, key=lambda key: result[key]['ccu'], reverse=True)[skip : amount + skip]
 
     return [
@@ -122,10 +119,10 @@ def get_top100_in_2weeks_random_apps_detailed(amount: int) -> List[schemas.AppDe
     return apps
 
 
-def get_base_app(app_id: int) -> schemas.AppBase:
-    result = get_request(url=URL_STEAMSPY_APP_DETAILS, params={'appid': app_id})
+def get_base_app(app_id: int) -> Optional[schemas.AppBase]:
+    result = get_request(url=URL_STEAMSPY, params={'request': 'appdetails', 'appid': app_id})
     if not result['name']:
-        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=f'Could not find app with app_id of {app_id}')
+        return None
 
     return create_app_base_object(app=result)
 

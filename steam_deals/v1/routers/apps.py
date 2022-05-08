@@ -32,6 +32,9 @@ DETAILED_QUERY_DESC: Final[str] = (
 def read_app(app_id: int, detailed: bool = True):
     app_base = apps.get_base_app(app_id=app_id)
 
+    if not app_base:
+        raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=f'Could not find app with app_id of {app_id}')
+
     if not detailed:
         return app_base
 

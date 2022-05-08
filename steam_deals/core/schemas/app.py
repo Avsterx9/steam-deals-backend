@@ -6,8 +6,8 @@ from pydantic import BaseModel
 
 
 class PriceOverview(BaseModel):
-    final: float
-    initial: float
+    final: Optional[float] = None
+    initial: Optional[float] = None
     discount: Optional[float] = None
 
 
