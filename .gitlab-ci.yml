@@ -67,7 +67,9 @@ Launch tests:
     when: always
     reports:
       junit: report.xml
-      cobertura: artifacts/coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: artifacts/coverage.xml
     paths:
       - artifacts/
 
