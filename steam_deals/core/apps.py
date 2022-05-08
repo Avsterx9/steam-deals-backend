@@ -17,6 +17,7 @@ log = logging.getLogger('steam_deals')
 URL_STEAMSPY: Final[str] = 'https://steamspy.com/api.php'
 URL_STEAM_POWERED_APP_DETAILS: Final[str] = 'https://store.steampowered.com/api/appdetails'
 URL_HEADER_IMAGE: Final[str] = 'https://steamcdn-a.akamaihd.net/steam/apps/:app_id:/header.jpg'
+URL_SEARCH_APPS: Final[str] = 'https://steamcommunity.com/actions/SearchApps'
 
 
 def create_app_base_object(app: dict, index: Optional[int] = None) -> schemas.AppBase:
@@ -119,12 +120,12 @@ def get_top100_in_2weeks_random_apps_detailed(amount: int) -> List[schemas.AppDe
     return apps
 
 
-def get_base_app(app_id: int) -> Optional[schemas.AppBase]:
+def get_base_app(app_id: int, index: Optional[int] = None) -> Optional[schemas.AppBase]:
     result = get_request(url=URL_STEAMSPY, params={'request': 'appdetails', 'appid': app_id})
     if not result['name']:
         return None
 
-    return create_app_base_object(app=result)
+    return create_app_base_object(app=result, index=index)
 
 
 def get_detailed_app(app_base: schemas.AppBase) -> Optional[schemas.AppDetailed]:
@@ -162,3 +163,14 @@ def get_detailed_app(app_base: schemas.AppBase) -> Optional[schemas.AppDetailed]
     base['release_date'] = release_date
 
     return schemas.AppDetailed(**base)
+
+
+def get_apps_by_title(title: str) -> List[schemas.AppBase]:
+    result = get_request(f'{URL_SEARCH_APPS}/{title}')
+
+    app_ids = [container['appid'] for container in result if 'appid' in container]
+
+    with ThreadPoolExecutor() as executor:
+        apps = executor.map(get_base_app, *(app_ids, tuple(range(len(app_ids)))))
+
+    return list(filter(None, apps))

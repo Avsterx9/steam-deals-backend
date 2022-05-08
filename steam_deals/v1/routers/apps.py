@@ -47,6 +47,16 @@ def read_app(app_id: int, detailed: bool = True):
 
 
 @apps_router.get(
+    path='/apps/search',
+    response_model=List[schemas.AppBase],
+    tags=['apps'],
+    description='Get a list of applications matching your search criteria by `title name`.',
+)
+def search_apps(title: str):
+    return apps.get_apps_by_title(title=title)
+
+
+@apps_router.get(
     path='/apps/top100in2weeks',
     response_model=List[schemas.AppBase],
     tags=['apps'],
