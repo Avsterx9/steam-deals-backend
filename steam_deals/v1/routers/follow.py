@@ -1,4 +1,5 @@
 import logging
+from typing import List
 from typing import Optional
 
 from fastapi import APIRouter
@@ -19,6 +20,28 @@ from steam_deals.core.utils import create_status_responses
 log = logging.getLogger('steam_deals')
 
 follows_router = APIRouter()
+
+
+@follows_router.get(
+    path='/follows/{app_id}',
+    response_model=List[schemas.FollowBase],
+    tags=['follows'],
+    description='Follow app specified by `app_id`. When there is no `price_target`, the notification will not be sent.',
+    responses=create_status_responses(
+        {
+            HTTP_401_UNAUTHORIZED: 'Problem with the `JWT token` (user does not exist / token invalid).',
+            HTTP_403_FORBIDDEN: 'When a user is `inactive` or `not verified`.',
+            HTTP_404_NOT_FOUND: 'When `no app` with the given `app_id` was found.',
+        }
+    ),
+)
+def read_users_following_specified_app(
+    app_id: int,
+    db: Session = Depends(get_db),
+):
+    # pylint: disable=unused-argument
+
+    return crud.follows.get_follows_by_app_id(db=db, app_id=app_id)
 
 
 @follows_router.put(
@@ -52,7 +75,7 @@ def follow_app(
 
         app = crud.apps.create_app(db=db, app=app_schema)
 
-    follow_schema = schemas.FollowBase(
+    follow_schema = schemas.FollowIn(
         username=user.username,
         steam_appid=app.steam_appid,
         price_target=price_target,
