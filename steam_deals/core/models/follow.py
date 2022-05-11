@@ -14,4 +14,5 @@ class Follow(Base):
     steam_appid = Column(ForeignKey('apps.steam_appid'), primary_key=True)
     price_target = Column(Numeric, nullable=False)
     notification = Column(Boolean, nullable=False)
-    app = relationship('App')
+    app = relationship('App', back_populates='users')
+    user = relationship('User', back_populates='apps')
