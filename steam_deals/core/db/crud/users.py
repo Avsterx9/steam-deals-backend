@@ -62,3 +62,9 @@ def get_users_with_filtering(db: Session, params: dict, skip: int = 0, limit: in
 
     users = users.offset(skip).limit(limit)
     return users.all()
+
+
+def delete_user(db: Session, user: schemas.UserDetailed):
+    db.delete(user)
+    db.commit()
+    return user

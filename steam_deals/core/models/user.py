@@ -19,4 +19,4 @@ class User(Base):
     disabled = Column(Boolean, nullable=False, default=False)
     admin = Column(Boolean, nullable=False, default=False)
     verified = Column(Boolean, nullable=False, default=False)
-    apps = relationship('Follow', back_populates='user')
+    apps = relationship('Follow', back_populates='user', cascade='all, delete-orphan')

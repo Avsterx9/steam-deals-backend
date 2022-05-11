@@ -4,14 +4,18 @@ from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from sqlalchemy.orm import Session
+from starlette.status import HTTP_401_UNAUTHORIZED
+from starlette.status import HTTP_403_FORBIDDEN
 from starlette.status import HTTP_404_NOT_FOUND
 from starlette.status import HTTP_409_CONFLICT
 
 from steam_deals.core import schemas
 from steam_deals.core import verification
+from steam_deals.core.authentication import get_current_active_user
 from steam_deals.core.db import crud
 from steam_deals.core.db.session import get_db
 from steam_deals.core.exception import HTTPException
+from steam_deals.core.utils import StatusResponse
 from steam_deals.core.utils import create_status_responses
 
 users_router = APIRouter()
@@ -82,3 +86,22 @@ def read_users(
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=f'No users with given params: {params}')
 
     return users
+
+
+@users_router.delete(
+    path='/users',
+    response_model=schemas.StatusResponse,
+    tags=['users'],
+    description='Delete the currently `logged in` user.',
+    responses=create_status_responses(
+        {
+            HTTP_401_UNAUTHORIZED: 'Problem with the `JWT token` (user does not exist / token invalid).',
+            HTTP_403_FORBIDDEN: 'When a user is `inactive`.',
+        },
+    ),
+)
+def delete_account_of_currently_logged_in_user(
+    db: Session = Depends(get_db), user: schemas.UserDetailed = Depends(get_current_active_user)
+):
+    crud.users.delete_user(db=db, user=user)
+    return StatusResponse(detail=f'User account with username {user.username} has been removed.')
