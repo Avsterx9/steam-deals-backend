@@ -36,3 +36,12 @@ class AppDetailed(AppBase):
     screenshots: List[str] = []
     short_description: Optional[str] = None
     release_date: Optional[datetime.datetime] = None
+
+
+class AppBaseInDb(BaseModel):
+    steam_appid: int
+    name: str
+    header_image: str
+    developers: List[str] = []
+    publishers: List[str] = []
+    price: float

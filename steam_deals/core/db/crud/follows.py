@@ -44,3 +44,7 @@ def get_follow_by_username_and_app_id(db: Session, username: str, app_id: int) -
 
 def get_follows_by_app_id(db: Session, app_id: int) -> List[models.Follow]:
     return db.query(models.Follow).filter(models.Follow.steam_appid == app_id).all()
+
+
+def get_follows_by_username(db: Session, username: str) -> List[models.Follow]:
+    return db.query(models.Follow).filter(models.Follow.username == username).all()

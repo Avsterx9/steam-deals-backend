@@ -24,7 +24,7 @@ follows_router = APIRouter()
 
 @follows_router.get(
     path='/follows/{app_id}',
-    response_model=List[schemas.FollowBase],
+    response_model=List[schemas.FollowPublic],
     tags=['follows'],
     description='Follow app specified by `app_id`. When there is no `price_target`, the notification will not be sent.',
     responses=create_status_responses(
