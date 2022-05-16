@@ -23,7 +23,7 @@ DETAILED_QUERY_DESC: Final[str] = (
 
 
 @apps_router.get(
-    path='/apps/id/{appid}',
+    path='/apps/id/{app_id}',
     response_model=Union[schemas.AppDetailed, schemas.AppBase],
     tags=['apps'],
     description='Get information about app by provided steam `appid`.',
