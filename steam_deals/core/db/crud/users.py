@@ -31,7 +31,7 @@ def update_user(db: Session, user: UserDetailed) -> models.User:
     db_user = get_user_by_username(db=db, username=user.username)
 
     for var, value in vars(user).items():
-        if value:
+        if value is not None:
             setattr(db_user, var, value)
 
     db.add(db_user)
