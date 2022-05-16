@@ -35,6 +35,7 @@ class AppDetailed(AppBase):
     app_type: str
     screenshots: List[str] = []
     short_description: Optional[str] = None
+    detailed_description: Optional[str] = None
     release_date: Optional[datetime.datetime] = None
 
 

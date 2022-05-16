@@ -140,6 +140,7 @@ def get_detailed_app(app_base: schemas.AppBase) -> Optional[schemas.AppDetailed]
     app = result['data']
     app_type = app.get('type', None)
     short_description = app.get('short_description', None)
+    detailed_description = app.get('detailed_description', None)
 
     screenshots_raw = app.get('screenshots', [])
     screenshots = []
@@ -160,6 +161,7 @@ def get_detailed_app(app_base: schemas.AppBase) -> Optional[schemas.AppDetailed]
     base['app_type'] = app_type
     base['screenshots'] = screenshots
     base['short_description'] = short_description
+    base['detailed_description'] = detailed_description
     base['release_date'] = release_date
 
     return schemas.AppDetailed(**base)
