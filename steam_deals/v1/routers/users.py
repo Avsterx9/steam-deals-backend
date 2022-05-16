@@ -76,7 +76,7 @@ def read_users(
     params.pop('db')
 
     params = {key: value for key, value in params.items() if value is not None}
-    users = crud.get_users_with_filtering(db, params=params, skip=skip, limit=limit)
+    users = crud.users.get_users_with_filtering(db, params=params, skip=skip, limit=limit)
 
     if not users:
         raise HTTPException(status_code=HTTP_404_NOT_FOUND, detail=f'No users with given params: {params}')
