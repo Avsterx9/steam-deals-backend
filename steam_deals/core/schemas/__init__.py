@@ -1,6 +1,7 @@
 from steam_deals.config import VERSION
 from steam_deals.config import settings
 from steam_deals.core.schemas.app import *
+from steam_deals.core.schemas.follow import *
 from steam_deals.core.schemas.other import *
 from steam_deals.core.schemas.token import *
 from steam_deals.core.schemas.user import *
